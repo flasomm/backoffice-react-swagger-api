@@ -1,0 +1,219 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: User API
+host: localhost:8000
+basePath: /
+tags:
+- name: user
+  description: Operations about user
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /users:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: users
+    get:
+      tags:
+      - user
+      description: Get all users
+      # used as the method name of the controller
+      operationId: getUsers
+      parameters:
+        - name: skip
+          in: query
+          description: Number of items to skip
+          required: false
+          type: integer
+          format: int32
+          minimum: 0
+        - name: limit
+          in: query
+          description: Max records to return
+          required: false
+          type: integer
+          format: int32
+          minimum: 10
+          maximum: 1000
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: '#/definitions/Users'
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/Error'
+  /user:
+    x-swagger-router-controller: users
+    post:
+      tags:
+        - user
+      description: Add a user
+      operationId: addUser
+      parameters:
+        - name: user
+          in: body
+          description: User to add
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/User'
+        "409":
+          description: Duplicate email
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/Error'
+  /user/{uid}:
+    x-swagger-router-controller: users
+    get:
+      tags:
+        - user
+      description: Get user by id
+      operationId: getUserById
+      parameters:
+        - name: uid
+          in: path
+          description: The user id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/User'
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      tags:
+        - user
+      description: Update a user
+      operationId: updateUser
+      parameters:
+        - name: uid
+          in: path
+          description: The user id
+          required: true
+          type: string
+        - name: user
+          in: body
+          description: User to update
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/User'
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        "409":
+          description: Duplicate email
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - user
+      description: Delete a user
+      operationId: deleteUser
+      parameters:
+        - name: uid
+          in: path
+          description: The user id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+        "404":
+          description: User not found
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/Error'
+  /swagger:
+    x-swagger-pipe: swagger_raw
+definitions:
+  User:
+    type: object
+    required:
+      - username
+      - email
+      - gender
+      - group
+    properties:
+      username:
+        type: string
+        minLength: 1
+        maxLength: 50
+      firstname:
+        type: string
+        maxLength: 100
+      lastname:
+        type: string
+        maxLength: 100
+      email:
+        type: string
+        format: email
+        maxLength: 100
+      password:
+        type: string
+      gender:
+        type: string
+        description: User gender
+        default: m
+        enum:
+          - m
+          - f
+      phone:
+        type: string
+      group:
+        type: string
+        description: User group
+        enum:
+          - admin
+          - user
+  Users:
+    type: array
+    items:
+      $ref: '#/definitions/User'
+  Error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+        minimum: 100
+        maximum: 600
+      fields:
+        type: object
