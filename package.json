@@ -1,0 +1,66 @@
+{
+  "name": "node-mongodb-swagger-express-api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "User api using swagger and express",
+  "keywords": [],
+  "author": {
+    "name": "Fabrice Sommavilla <fs@physalix.com>"
+  },
+  "engines": {
+    "node": ">= 4.6.x"
+  },
+  "main": "app.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.12.3",
+    "mongodb": "^2.2.10",
+    "swagger-express-mw": "^0.7.0",
+    "swagger-tools": "^0.10.1",
+    "winston": "^2.2.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "react": "^15.3.2",
+    "react-bootstrap": "^0.30.5",
+    "react-bootstrap-geosuggest": "^1.25.5",
+    "react-dom": "^15.3.2",
+    "react-helmet": "^3.1.0",
+    "react-router": "^2.8.1",
+    "react-router-bootstrap": "^0.23.1",
+    "react-router-scroll": "^0.3.2",
+    "url-loader": "^0.5.7",
+    "webpack-isomorphic-tools": "^2.6.3"
+  },
+  "devDependencies": {
+    "should": "^11.1.0",
+    "supertest": "^2.0.0",
+    "jshint": "^2.9.3",
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.5",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-react-display-name": "^6.8.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "cross-env": "^3.1.3",
+    "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
+    "html-webpack-plugin": "^2.22.0",
+    "rimraf": "^2.5.4",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.2",
+    "webpack-dev-middleware": "^1.8.4",
+    "webpack-hot-middleware": "^2.13.0"
+  },
+  "scripts": {
+    "lint": "jshint **.js",
+    "start-api": "swagger project start api",
+    "test-api": "swagger project test",
+    "start-bo": "node client",
+    "dist-bo": "rimraf dist && cross-env NODE_ENV=production webpack -p --verbose --progress --display-error-details --profile --colors --config ./config/webpack.config.js",
+    "test-bo": "echo \"Error: no test specified\" && exit 1"
+  }
+}
