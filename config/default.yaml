@@ -38,6 +38,7 @@ swagger:
 # any other values in this file are just loaded into the config for application access...
 
 server:
+  host: localhost
   port: 8000
 
-db: mongodb://localhost/test
+database: mongodb://localhost/test

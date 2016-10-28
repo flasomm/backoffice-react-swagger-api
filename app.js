@@ -38,17 +38,17 @@
 
         // Create a MonboDB connection pool and start the Node.js app
         let config = require('config');
-        let db = config.db;
+        let db = config.database;
+        let host = config.server.host || localhost;
         let port = config.server.port || 8000;
 
         MongoClient.connect(db)
             .catch(err => console.error(err.stack))
             .then(db => {
                 app.locals.db = db;
-                app.listen(port, () => {
+                app.listen(port, host, () => {
                     console.log('App is listening at port %d', port);
                 });
             });
-
     });
 }());
