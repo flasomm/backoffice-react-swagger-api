@@ -34,9 +34,6 @@
     "webpack-isomorphic-tools": "^2.6.3"
   },
   "devDependencies": {
-    "should": "^11.1.0",
-    "supertest": "^2.0.0",
-    "jshint": "^2.9.3",
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -47,20 +44,23 @@
     "babel-preset-react": "^6.16.0",
     "cross-env": "^3.1.3",
     "css-loader": "^0.25.0",
+    "eslint": "^3.8.1",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.22.0",
     "rimraf": "^2.5.4",
+    "should": "^11.1.0",
     "style-loader": "^0.13.1",
+    "supertest": "^2.0.0",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.0"
   },
   "scripts": {
-    "lint": "jshint **.js",
+    "lint": "eslint -c .eslintrc **/*.js",
     "start-api": "swagger project start api",
     "test-api": "swagger project test",
-    "start-bo": "node client",
-    "dist-bo": "rimraf dist && cross-env NODE_ENV=production webpack -p --verbose --progress --display-error-details --profile --colors --config ./config/webpack.config.js",
-    "test-bo": "echo \"Error: no test specified\" && exit 1"
+    "start-client": "node client",
+    "dist-client": "rimraf dist && cross-env NODE_ENV=production webpack -p --verbose --progress --display-error-details --profile --colors --config ./config/webpack.config.js",
+    "test-client": "echo \"Error: no test specified\" && exit 1"
   }
 }

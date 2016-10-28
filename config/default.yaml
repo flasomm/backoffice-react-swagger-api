@@ -41,6 +41,3 @@ server:
   port: 8000
 
 db: mongodb://localhost/test
-
-log:
-  level: debug

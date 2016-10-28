@@ -65,4 +65,4 @@ module.exports = {
             parser: WebpackIsomorphicToolsPlugin.css_loader_parser
         }
     }
-}
+};
