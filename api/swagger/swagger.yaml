@@ -51,6 +51,8 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/Error'
+      security:
+        - api_key: []
   /user:
     x-swagger-router-controller: users
     post:
@@ -76,6 +78,8 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/Error'
+      security:
+        - api_key: []
   /user/{uid}:
     x-swagger-router-controller: users
     get:
@@ -102,6 +106,8 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/Error'
+      security:
+        - api_key: []
     put:
       tags:
         - user
@@ -134,6 +140,8 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/Error'
+      security:
+        - api_key: []
     delete:
       tags:
         - user
@@ -156,8 +164,15 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/Error'
+      security:
+        - api_key: []
   /swagger:
     x-swagger-pipe: swagger_raw
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: query
 definitions:
   User:
     type: object

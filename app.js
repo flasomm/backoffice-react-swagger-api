@@ -5,10 +5,9 @@
     var SwaggerExpress = require('swagger-express-mw');
     var SwaggerUi = require('swagger-tools/middleware/swagger-ui');
     var app = require('express')();
-    module.exports = app; // for testing
 
     var config = {
-        appRoot: __dirname // required config
+        appRoot: __dirname
     };
 
     SwaggerExpress.create(config, function (err, swaggerExpress) {
@@ -18,7 +17,6 @@
 
         // Add swagger-ui (This must be before swaggerExpress.register)
         app.use(SwaggerUi(swaggerExpress.runner.swagger));
-
         // Add headers
         app.use(function (req, res, next) {
             // Website you wish to allow to connect
