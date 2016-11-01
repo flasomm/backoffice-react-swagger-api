@@ -5,7 +5,7 @@ info:
 host: localhost:8000
 basePath: /
 tags:
-- name: user
+- name: User
   description: Operations about user
 schemes:
   - http
@@ -20,7 +20,7 @@ paths:
     x-swagger-router-controller: users
     get:
       tags:
-      - user
+      - User
       description: Get all users
       # used as the method name of the controller
       operationId: getUsers
@@ -57,7 +57,7 @@ paths:
     x-swagger-router-controller: users
     post:
       tags:
-        - user
+        - User
       description: Add a user
       operationId: addUser
       parameters:
@@ -84,7 +84,7 @@ paths:
     x-swagger-router-controller: users
     get:
       tags:
-        - user
+        - User
       description: Get user by id
       operationId: getUserById
       parameters:
@@ -110,7 +110,7 @@ paths:
         - api_key: []
     put:
       tags:
-        - user
+        - User
       description: Update a user
       operationId: updateUser
       parameters:
@@ -144,7 +144,7 @@ paths:
         - api_key: []
     delete:
       tags:
-        - user
+        - User
       description: Delete a user
       operationId: deleteUser
       parameters:
@@ -166,6 +166,37 @@ paths:
             $ref: '#/definitions/Error'
       security:
         - api_key: []
+  /login:
+    x-swagger-router-controller: users
+    post:
+      tags:
+        - User
+      description: Authenticate user
+      operationId: login
+      parameters:
+        - in: query
+          name: email
+          description: The user email for login
+          required: true
+          type: string
+        - in: query
+          name: password
+          description: The password for login in clear text
+          required: true
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid username/password supplied
+        "404":
+          description: User not found
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/Error'
   /swagger:
     x-swagger-pipe: swagger_raw
 securityDefinitions:

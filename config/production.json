@@ -1,0 +1,8 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 8000
+  },
+  "database": "mongodb://localhost/test",
+  "jwtSecret": "replacethis"
+}

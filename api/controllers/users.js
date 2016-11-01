@@ -1,16 +1,19 @@
 'use strict';
 
 var Promise = require('es6-promise').Promise;
-var mongo   = require('mongodb');
-var config  = require('config');
+var mongo = require('mongodb');
 var winston = require('winston');
+var jwt = require('jsonwebtoken');
+var secret = require('config').jwtSecret;
+var crypto = require('crypto');
 
 module.exports = {
-    getUsers   : getUsers,
+    getUsers: getUsers,
     getUserById: getUserById,
-    addUser    : addUser,
-    updateUser : updateUser,
-    deleteUser : deleteUser
+    addUser: addUser,
+    updateUser: updateUser,
+    deleteUser: deleteUser,
+    login: login
 };
 
 /**
@@ -20,8 +23,8 @@ module.exports = {
  * @param res
  */
 function getUsers(req, res) {
-    var skip       = req.swagger.params.skip.value;
-    var limit      = req.swagger.params.limit.value;
+    var skip = req.swagger.params.skip.value;
+    var limit = req.swagger.params.limit.value;
     var queryUsers = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').find({}, {skip: skip, limit: limit}).toArray(function (err, docs) {
@@ -45,8 +48,8 @@ function getUsers(req, res) {
  * @param res
  */
 function getUserById(req, res) {
-    var uid       = req.swagger.params.uid.value;
-    var oid       = new mongo.ObjectID(uid);
+    var uid = req.swagger.params.uid.value;
+    var oid = new mongo.ObjectID(uid);
     var queryUser = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOne({_id: oid}, function (err, doc) {
@@ -73,12 +76,12 @@ function getUserById(req, res) {
  * @param res
  */
 function addUser(req, res) {
-    var user       = req.swagger.params.user.value;
-    user.created   = new Date();
-    user.updated   = new Date();
-    user.status    = 1;
+    var user = req.swagger.params.user.value;
+    user.created = new Date();
+    user.updated = new Date();
+    user.status = 1;
     user.activated = 0;
-    var queryAdd   = new Promise(function (resolve, reject) {
+    var queryAdd = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').insertOne(user, function (err, r) {
             if (err) return reject(err);
@@ -106,10 +109,10 @@ function addUser(req, res) {
  * @param res
  */
 function updateUser(req, res) {
-    var uid         = req.swagger.params.uid.value;
-    var user        = req.swagger.params.user.value;
-    var oid         = new mongo.ObjectID(uid);
-    user.updated    = new Date();
+    var uid = req.swagger.params.uid.value;
+    var user = req.swagger.params.user.value;
+    var oid = new mongo.ObjectID(uid);
+    user.updated = new Date();
     var queryUpdate = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOneAndUpdate({_id: oid},
@@ -144,8 +147,8 @@ function updateUser(req, res) {
  * @param res
  */
 function deleteUser(req, res) {
-    var uid         = req.swagger.params.uid.value;
-    var oid         = new mongo.ObjectID(uid);
+    var uid = req.swagger.params.uid.value;
+    var oid = new mongo.ObjectID(uid);
     var queryDelete = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOneAndDelete({_id: oid}, function (err, r) {
@@ -161,6 +164,47 @@ function deleteUser(req, res) {
             res.status(404).json({'message': 'User not found'});
         }
 
+    }).catch(function (error) {
+        winston.error(error.message);
+        res.status(500).json({'code': error.code, 'message': error.message});
+    });
+}
+
+/**
+ * Log in user to system.
+ *
+ * @param req
+ * @param res
+ */
+function login(req, res) {
+    var email = req.swagger.params.email.value;
+    var password = req.swagger.params.password.value;
+    var hash = crypto.createHash('md5').update(password).digest('hex');
+    var queryUser = new Promise(function (resolve, reject) {
+        const db = req.app.locals.db;
+        db.collection('users').findOne({email: email, password: hash}, function (err, doc) {
+            if (err) return reject(err);
+            resolve(doc);
+        });
+    });
+
+    queryUser.then(function (doc) {
+        if (doc === null) {
+            res.status(404).json({'message': 'User not found'});
+        } else {
+            var profile = {
+                firstname: doc.firstname,
+                lastname: doc.lastname,
+                email: doc.email
+            };
+            var token = jwt.sign(profile, secret, {
+                expiresIn: 60 * 5
+            });
+
+            res.json({
+                token: token
+            });
+        }
     }).catch(function (error) {
         winston.error(error.message);
         res.status(500).json({'code': error.code, 'message': error.message});

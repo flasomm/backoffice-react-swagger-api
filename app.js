@@ -4,13 +4,30 @@
     var MongoClient = require('mongodb').MongoClient;
     var SwaggerExpress = require('swagger-express-mw');
     var SwaggerUi = require('swagger-tools/middleware/swagger-ui');
+    var jwt = require('jsonwebtoken');
     var app = require('express')();
+    var config = require('config');
 
-    var config = {
-        appRoot: __dirname
+    var swaggerConfig = {
+        appRoot: __dirname,
+        swaggerSecurityHandlers: {
+            api_key: function (req, authOrSecDef, scopes, next) {
+                if (scopes) {
+                    jwt.verify(scopes, config.get('jwtSecret'), {}, function(err) {
+                        if(err) {
+                            return cb(new Error('Invalid token'));
+                        }
+
+                        next();
+                    });
+                } else {
+                    next(new Error('Unauthorized'));
+                }
+            }
+        }
     };
 
-    SwaggerExpress.create(config, function (err, swaggerExpress) {
+    SwaggerExpress.create(swaggerConfig, function (err, swaggerExpress) {
         if (err) {
             throw err;
         }
@@ -19,15 +36,10 @@
         app.use(SwaggerUi(swaggerExpress.runner.swagger));
         // Add headers
         app.use(function (req, res, next) {
-            // Website you wish to allow to connect
             res.setHeader('Access-Control-Allow-Origin', '*');
-            // Request methods you wish to allow
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-            // Request headers you wish to allow
             res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-            // Website you wish to allow to connect
             res.setHeader('Content-Type', 'application/json');
-            // Pass to next layer of middleware
             next();
         });
 
@@ -35,10 +47,9 @@
         swaggerExpress.register(app);
 
         // Create a MonboDB connection pool and start the Node.js app
-        let config = require('config');
-        let db = config.database;
-        let host = config.server.host || localhost;
-        let port = config.server.port || 8000;
+        let db = config.get('database');
+        let host = config.get('server.host') || localhost;
+        let port = config.get('server.port') || 8000;
 
         MongoClient.connect(db)
             .catch(err => console.error(err.stack))

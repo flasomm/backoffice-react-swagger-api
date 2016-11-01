@@ -71,6 +71,6 @@ module.exports = {
         })
     ],
     externals: {
-        config: JSON.stringify(extend(require('./config.json')), process.env.NODE_ENV === 'production' ? require('./config.prod.json') : require('./config.dev.json'))
+        config: JSON.stringify(extend(require('./config.json')), process.env.NODE_ENV === 'production' ? require('./production.json') : require('./dev.json'))
     }
 };
