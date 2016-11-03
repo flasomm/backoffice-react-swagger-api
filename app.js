@@ -10,6 +10,7 @@
 
     var swaggerConfig = {
         appRoot: __dirname,
+        mapErrorsToJson: true,
         swaggerSecurityHandlers: {
             api_key: function (req, authOrSecDef, scopes, next) {
                 if (scopes) {

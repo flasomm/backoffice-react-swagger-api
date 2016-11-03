@@ -174,16 +174,12 @@ paths:
       description: Authenticate user
       operationId: login
       parameters:
-        - in: query
-          name: email
-          description: The user email for login
+        - name: credential
+          in: body
+          description: The user email and password for login
           required: true
-          type: string
-        - in: query
-          name: password
-          description: The password for login in clear text
-          required: true
-          type: string
+          schema:
+            $ref: '#/definitions/Credential'
       responses:
         "200":
           description: successful operation
@@ -244,6 +240,18 @@ definitions:
         enum:
           - admin
           - user
+  Credential:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        format: email
+        maxLength: 100
+      password:
+        type: string
   Users:
     type: array
     items:

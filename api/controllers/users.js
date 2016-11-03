@@ -177,12 +177,11 @@ function deleteUser(req, res) {
  * @param res
  */
 function login(req, res) {
-    var email = req.swagger.params.email.value;
-    var password = req.swagger.params.password.value;
-    var hash = crypto.createHash('md5').update(password).digest('hex');
+    var credential = req.swagger.params.credential.value;
+    var hash = crypto.createHash('md5').update(credential.password).digest('hex');
     var queryUser = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
-        db.collection('users').findOne({email: email, password: hash}, function (err, doc) {
+        db.collection('users').findOne({email: credential.email, password: hash}, function (err, doc) {
             if (err) return reject(err);
             resolve(doc);
         });
@@ -192,13 +191,16 @@ function login(req, res) {
         if (doc === null) {
             res.status(404).json({'message': 'User not found'});
         } else {
+            console.log(doc._id);
             var profile = {
+                id: doc._id,
+                username: doc.username,
                 firstname: doc.firstname,
                 lastname: doc.lastname,
                 email: doc.email
             };
             var token = jwt.sign(profile, secret, {
-                expiresIn: 60 * 5
+                expiresIn: 60 * 60 * 24 // expires in 24 hours
             });
 
             res.json({
