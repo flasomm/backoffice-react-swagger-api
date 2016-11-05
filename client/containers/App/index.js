@@ -1,65 +1,68 @@
-import React, {Component, PropTypes} from 'react';
-import {IndexLink} from 'react-router';
-import {LinkContainer} from 'react-router-bootstrap';
-import Navbar from 'react-bootstrap/lib/Navbar';
-import NavItem from 'react-bootstrap/lib/NavItem';
-import Nav from 'react-bootstrap/lib/Nav';
-import Modal from 'react-bootstrap/lib/Modal';
+import React, {Component} from 'react';
+import {Link} from 'react-router'
 import {Footer} from 'components';
-import {Login} from 'containers';
 var config = require('config');
+import auth from '../utils/auth';
 
 export default class App extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {showModal: false};
-        this.close = this.close.bind(this);
-        this.open = this.open.bind(this);
+        this.state = {isAuthenticated: auth.isAuthenticated()};
+        this.updateAuth = this.updateAuth.bind(this);
     }
 
-    close() {
-        this.setState({showModal: false});
+    updateAuth(isAuthenticated) {
+        this.setState({isAuthenticated: isAuthenticated})
     }
 
-    open() {
-        this.setState({showModal: true});
+    componentWillMount() {
+        auth.verifyToken();
     }
 
     render() {
         const styles = require('./index.css');
         return (
             <div>
-                <Navbar inverse fixedTop>
-                    <Navbar.Header>
-                        <Navbar.Brand>
-                            <IndexLink to="/">
+                <nav className="navbar navbar-inverse navbar-fixed-top">
+                    <div className="container">
+                        <div className="navbar-header">
+                            <a className="navbar-brand" href="/">
                                 <span>{config.app.title}</span>
-                            </IndexLink>
-                        </Navbar.Brand>
-                        <Navbar.Toggle/>
-                    </Navbar.Header>
-                    <Navbar.Collapse>
-                        <Nav navbar pullRight>
-                            <NavItem eventKey={1} href="/signup">Get started for free</NavItem>
-                            <NavItem eventKey={2} href="#" onClick={this.open}>Login</NavItem>
-                            <LinkContainer to="/logout">
-                                <NavItem eventKey={3} href="#" className="logout-link">Logout</NavItem>
-                            </LinkContainer>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Navbar>
-                <div>
+                            </a>
+                            <button type="button" className="navbar-toggle collapsed">
+                                <span className="sr-only">Toggle navigation</span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                            </button>
+                        </div>
+                        <div className="navbar-collapse collapse">
+                            {this.state.isAuthenticated ? (
+                                <ul className="nav navbar-nav navbar-right">
+                                    <li role="presentation" className="dashboard-link">
+                                        <Link to="/dashboard">Dashboard</Link>
+                                    </li>
+                                    <li role="presentation" className="logout-link">
+                                        <Link to="/logout">Logout</Link>
+                                    </li>
+                                </ul>
+                            ) : (
+                                <ul className="nav navbar-nav navbar-right">
+                                    <li role="presentation">
+                                        <Link to="/signup">Get started for free</Link>
+                                    </li>
+                                    <li role="presentation">
+                                        <Link to="/login">Login</Link>
+                                    </li>
+                                </ul>
+                            )}
+                        </div>
+                    </div>
+                </nav>
+                <div >
                     {this.props.children}
                 </div>
-                <Modal show={this.state.showModal} onHide={this.close}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Log In</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Login />
-                    </Modal.Body>
-                </Modal>
             </div>
         );
     }

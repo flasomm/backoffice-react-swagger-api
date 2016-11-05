@@ -49,8 +49,8 @@
 
         // Create a MonboDB connection pool and start the Node.js app
         let db = config.get('database');
-        let host = config.get('server.host') || localhost;
-        let port = config.get('server.port') || 8000;
+        let host = config.get('api.host') || localhost;
+        let port = config.get('api.port') || 8000;
 
         MongoClient.connect(db)
             .catch(err => console.error(err.stack))

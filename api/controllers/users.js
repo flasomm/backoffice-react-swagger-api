@@ -13,7 +13,8 @@ module.exports = {
     addUser: addUser,
     updateUser: updateUser,
     deleteUser: deleteUser,
-    login: login
+    login: login,
+    validateToken: validateToken
 };
 
 /**
@@ -191,7 +192,6 @@ function login(req, res) {
         if (doc === null) {
             res.status(404).json({'message': 'User not found'});
         } else {
-            console.log(doc._id);
             var profile = {
                 id: doc._id,
                 username: doc.username,
@@ -211,4 +211,44 @@ function login(req, res) {
         winston.error(error.message);
         res.status(500).json({'code': error.code, 'message': error.message});
     });
+}
+
+/**
+ * Validate jwt token.
+ *
+ * @param req
+ * @param res
+ */
+function validateToken(req, res) {
+    var body = req.swagger.params.jwt.value;
+    jwt.verify(body.token, secret, function (err, user) {
+        if (err) {
+            res.status(401).json({'code': 1, 'message': err.message});
+        }
+
+        if (user) {
+            var oid = new mongo.ObjectID(user.id);
+            var queryUser = new Promise(function (resolve, reject) {
+                const db = req.app.locals.db;
+                db.collection('users').findOne({_id: oid}, function (err, doc) {
+                    if (err) return reject(err);
+                    resolve(doc);
+                });
+            });
+
+            queryUser.then(function (doc) {
+                if (doc === null) {
+                    res.status(404).json({'message': 'User not found'});
+                }
+                res.json({
+                    token: body.token
+                });
+
+
+            }).catch(function (error) {
+                winston.error(error.message);
+                res.status(500).json({'code': error.code, 'message': error.message});
+            });
+        }
+    })
 }

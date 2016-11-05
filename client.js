@@ -5,8 +5,7 @@ const Express = require('express');
 const webpack = require('webpack');
 const config = require('./config/webpack.config');
 
-const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = isDeveloping ? 3000 : process.env.PORT;
+const isDeveloping = process.env.NODE_ENV !== 'prod';
 const serverOptions = {
     contentBase: 'src',
     quiet: true,
@@ -44,6 +43,8 @@ if (isDeveloping) {
         res.sendFile(path.join(__dirname, 'dist/index.html'));
     });
 }
+
+const port = isDeveloping ? JSON.parse(config.externals.config).client.port : 3000;
 
 app.listen(port, '0.0.0.0', function onAppListening(err) {
     if (err) {

@@ -1,7 +1,11 @@
 {
-  "server": {
+  "api": {
     "host": "localhost",
     "port": 8000
+  },
+  "client": {
+    "host": "localhost",
+    "port": 3000
   },
   "database": "mongodb://localhost/test",
   "jwtSecret": "replacethis"

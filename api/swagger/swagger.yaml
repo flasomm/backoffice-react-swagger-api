@@ -193,6 +193,32 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/Error'
+  /validateToken:
+    x-swagger-router-controller: users
+    post:
+      tags:
+        - User
+      description: Validate user jwt token
+      operationId: validateToken
+      parameters:
+        - name: jwt
+          in: body
+          description: The user token
+          required: true
+          schema:
+            $ref: '#/definitions/JwtToken'
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid jwt token supplied
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/Error'
+
   /swagger:
     x-swagger-pipe: swagger_raw
 securityDefinitions:
@@ -251,6 +277,13 @@ definitions:
         format: email
         maxLength: 100
       password:
+        type: string
+  JwtToken:
+    type: object
+    required:
+      - token
+    properties:
+      token:
         type: string
   Users:
     type: array
