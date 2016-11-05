@@ -179,7 +179,7 @@ function deleteUser(req, res) {
  */
 function login(req, res) {
     var credential = req.swagger.params.credential.value;
-    var hash = crypto.createHash('md5').update(credential.password).digest('hex');
+    var hash = crypto.createHash('sha256').update(credential.password).digest('hex');
     var queryUser = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOne({email: credential.email, password: hash}, function (err, doc) {

@@ -1,10 +1,5 @@
 import React, {Component} from 'react';
 import Helmet from 'react-helmet';
-import Button from 'react-bootstrap/lib/Button';
-import FormGroup from 'react-bootstrap/lib/FormGroup';
-import ControlLabel from 'react-bootstrap/lib/ControlLabel';
-import FormControl from 'react-bootstrap/lib/FormControl';
-import HelpBlock from 'react-bootstrap/lib/HelpBlock';
 
 export default class ForgotPassword extends Component {
 
@@ -31,21 +26,12 @@ export default class ForgotPassword extends Component {
             <div className="formForgot">
                 <Helmet title="Forgot password"/>
                 <form>
-                    <FormGroup
-                        controlId="formBasicText"
-                        validationState={this.getValidationState()}
-                    >
-                        <ControlLabel>Email address</ControlLabel>
-                        <FormControl
-                            type="text"
-                            value={this.state.value}
-                            placeholder="Your email"
-                            onChange={this.handleChange}
-                        />
-                        <FormControl.Feedback />
-                        <HelpBlock>Validation is based on string length.</HelpBlock>
-                        <Button bsStyle="primary" type="submit" className="forgot-button">Send me instructions</Button>
-                    </FormGroup>
+                    <div className="form-group has-feedback">
+                        <label for="formBasicText" className="control-label">Email address</label>
+                        <input type="text" value="" placeholder="Your email" id="formBasicText" className="form-control"/>
+                        <span className="help-block">Validation is based on string length.</span>
+                        <button type="submit" className="forgot-button btn btn-primary">Send me instructions</button>
+                    </div>
                 </form>
             </div>
         );

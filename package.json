@@ -22,7 +22,6 @@
     "jsonwebtoken": "^7.1.9",
     "mongodb": "^2.2.10",
     "react": "^15.3.2",
-    "react-bootstrap": "^0.30.5",
     "react-bootstrap-geosuggest": "^1.25.5",
     "react-cookie": "^0.4.8",
     "react-dom": "^15.3.2",

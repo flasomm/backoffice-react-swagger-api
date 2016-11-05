@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Helmet from 'react-helmet';
 import {Heading, Footer} from 'components';
-import Button from 'react-bootstrap/lib/Button';
 var config = require('config');
 
 export default class Home extends Component {
@@ -19,7 +18,7 @@ export default class Home extends Component {
                     <div className="container">
                         <h1>{config.app.title}</h1>
                         <p>{config.app.description}</p>
-                        <p><Button bsStyle="primary">Learn more &raquo;</Button></p>
+                        <p><button type="button" class="btn btn-primary">Learn more »</button></p>
                     </div>
                 </div>
                 <div className="container">
