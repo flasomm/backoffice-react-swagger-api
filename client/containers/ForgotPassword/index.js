@@ -27,7 +27,7 @@ export default class ForgotPassword extends Component {
                 <Helmet title="Forgot password"/>
                 <form>
                     <div className="form-group has-feedback">
-                        <label for="formBasicText" className="control-label">Email address</label>
+                        <label htmlFor="formBasicText" className="control-label">Email address</label>
                         <input type="text" value="" placeholder="Your email" id="formBasicText" className="form-control"/>
                         <span className="help-block">Validation is based on string length.</span>
                         <button type="submit" className="forgot-button btn btn-primary">Send me instructions</button>
