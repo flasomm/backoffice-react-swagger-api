@@ -5,7 +5,7 @@ var config = require('config');
 
 export default class Home extends Component {
     render() {
-        const styles = require('./index.css');
+        const styles = require('./styles.css');
         var headings = [];
         for (var i=0; i < 3; i++) {
             headings.push(<Heading key={i} />);
