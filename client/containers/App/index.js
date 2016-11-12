@@ -21,7 +21,7 @@ export default class App extends Component {
     }
 
     render() {
-        const styles = require('./index.css');
+        const styles = require('./styles.css');
         return (
             <div>
                 <nav className="navbar navbar-inverse navbar-fixed-top">
