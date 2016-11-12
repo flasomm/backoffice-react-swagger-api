@@ -1,12 +1,15 @@
 {
   "api": {
     "host": "localhost",
-    "port": 8000
+    "port": 8000,
+    "user": "noreply@physalix.com",
+    "password": "noreply123"
   },
   "client": {
     "host": "localhost",
     "port": 3000
   },
   "database": "mongodb://localhost/test",
-  "jwtSecret": "replacethis"
+  "jwtSecret": "replacethis",
+  "recaptchaId": "6LfHgtkSAAAAAEJjL-RqLm-MVbk6ChP_c33fmCcN"
 }

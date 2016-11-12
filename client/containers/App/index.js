@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router'
 import {Footer} from 'components';
-var config = require('config');
 import auth from '../utils/auth';
+var config = require('config');
 
 export default class App extends Component {
 

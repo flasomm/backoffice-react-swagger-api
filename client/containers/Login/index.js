@@ -24,26 +24,27 @@ export default class Login extends Component {
         let callback = auth.login(
             this.refs.email.value,
             this.refs.password.value,
-            function (authenticated, message, code) {
-                switch (code) {
+            function (token, res) {
+                switch (res.status) {
                     case 200:
                         this.setState({type: 'success', message: 'Authentication successful'});
                         window.location.replace("/dashboard");
                         break;
                     case 400:
-                        this.setState({type: 'danger', message: message});
+                        this.setState({type: 'danger', message: res.statusText});
                         break;
                     case 404:
-                        this.setState({type: 'danger', message: 'Bad credentials'});
+                        this.setState({type: 'warning', message: 'Bad credentials'});
                         break;
                 }
-            }.bind(this)
+            }.bind(this),
+            true
         );
         this.setState({type: 'info', message: 'Connecting...'}, callback);
     }
 
     renderMessage() {
-        if (this.state.type.length > 0) {
+        if (this.state.message.length > 0) {
             return (
                 <div className={'alert alert-' + this.state.type} role="alert">{this.state.message}</div>
             );

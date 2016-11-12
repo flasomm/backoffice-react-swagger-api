@@ -1,10 +1,11 @@
 import cookie from 'react-cookie';
 import 'whatwg-fetch';
+import {isNil} from 'lodash';
 var config = require('config');
 
 module.exports = {
 
-    login(email, password, cb) {
+    login(email, password, cb, withCookie) {
         fetch('http://' + config.api.host + ':' + config.api.port + '/login', {
             method: 'POST',
             headers: {
@@ -17,13 +18,10 @@ module.exports = {
             })
         }).then(function (res) {
             return res.json().then(function (json) {
-                if (res.ok && json.token != null) {
+                if (res.ok && !isNil(json.token) && withCookie === true) {
                     cookie.save('jwtToken', json.token, {path: '/'});
-                    cb(true, res.statusText, res.status);
-
-                } else {
-                    cb(false, res.statusText, res.status);
                 }
+                cb(json.token, res);
             });
         });
     },
@@ -44,7 +42,7 @@ module.exports = {
                 token: token
             })
         }).then(function (res) {
-            if(res.status === 401) {
+            if (res.status === 401) {
                 self.logout();
                 window.location.replace("/login");
             }

@@ -182,10 +182,12 @@ function login(req, res) {
     var hash = crypto.createHash('sha256').update(credential.password).digest('hex');
     var queryUser = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
-        db.collection('users').findOne({email: credential.email, password: hash}, function (err, doc) {
-            if (err) return reject(err);
-            resolve(doc);
-        });
+        db.collection('users').findOne(
+            {email: credential.email, password: hash, activated: true},
+            function (err, doc) {
+                if (err) return reject(err);
+                resolve(doc);
+            });
     });
 
     queryUser.then(function (doc) {

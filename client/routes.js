@@ -5,6 +5,7 @@ import {
     App,
     Home,
     Signup,
+    SignupSuccess,
     Login,
     Logout,
     ForgotPassword,
@@ -26,6 +27,7 @@ export default () => {
         <Route path="/" component={App}>
             <IndexRoute component={Home}/>
             <Route path="signup" component={Signup}/>
+            <Route path="signup-success" component={SignupSuccess}/>
             <Route path="login" component={Login}/>
             <Route path="logout" component={Logout}/>
             <Route path="forgot-password" component={ForgotPassword}/>

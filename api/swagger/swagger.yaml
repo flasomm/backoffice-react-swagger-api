@@ -1,12 +1,15 @@
 swagger: "2.0"
+################################################################################
+#                              API Information                                 #
+################################################################################
 info:
   version: "0.0.1"
   title: User API
+################################################################################
+#                  Host, Base Path, Schemes and Content Types                  #
+################################################################################
 host: localhost:8000
 basePath: /
-tags:
-- name: User
-  description: Operations about user
 schemes:
   - http
   - https
@@ -14,6 +17,15 @@ consumes:
   - application/json
 produces:
   - application/json
+################################################################################
+#                                   Tags                                       #
+################################################################################
+tags:
+- name: User
+  description: Operations about user
+################################################################################
+#                                   Paths                                      #
+################################################################################
 paths:
   /users:
     # binds a127 app logic to a route
@@ -218,14 +230,19 @@ paths:
           description: Error
           schema:
             $ref: '#/definitions/Error'
-
   /swagger:
     x-swagger-pipe: swagger_raw
+################################################################################
+#                                  Security                                    #
+################################################################################
 securityDefinitions:
   api_key:
     type: apiKey
     name: api_key
     in: query
+################################################################################
+#                                   Definitions                                #
+################################################################################
 definitions:
   User:
     type: object
@@ -251,6 +268,8 @@ definitions:
         maxLength: 100
       password:
         type: string
+      location:
+        $ref: '#/definitions/Location'
       gender:
         type: string
         description: User gender
@@ -258,14 +277,37 @@ definitions:
         enum:
           - m
           - f
-      phone:
-        type: string
       group:
         type: string
         description: User group
         enum:
           - admin
           - user
+  Coordinates:
+    type: object
+    required:
+      - type
+      - coordinates
+    properties:
+      type:
+        type: string
+      coordinates:
+        type: array
+        items:
+          type: number
+  Location:
+    type: object
+    required:
+      - place
+      - placeId
+      - coords
+    properties:
+      place:
+        type: string
+      placeId:
+        type: string
+      coords:
+        $ref: '#/definitions/Coordinates'
   Credential:
     type: object
     required:

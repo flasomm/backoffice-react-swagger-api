@@ -18,7 +18,7 @@ export default class Home extends Component {
                     <div className="container">
                         <h1>{config.app.title}</h1>
                         <p>{config.app.description}</p>
-                        <p><button type="button" class="btn btn-primary">Learn more »</button></p>
+                        <p><button type="button" className="btn btn-primary">Learn more »</button></p>
                     </div>
                 </div>
                 <div className="container">

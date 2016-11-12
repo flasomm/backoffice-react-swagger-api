@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import Button from 'react-bootstrap/lib/Button';
 
 export default class Heading extends Component {
 
@@ -10,7 +9,7 @@ export default class Heading extends Component {
                 <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum
                     nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio
                     dui. </p>
-                <p><Button>View details &raquo;</Button></p>
+                <p><a className="btn btn-default" href="#" role="button">View details &raquo;</a></p>
             </div>
         );
     }
