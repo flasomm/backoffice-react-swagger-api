@@ -82,7 +82,7 @@ function addUser(req, res) {
     user.created = new Date();
     user.updated = new Date();
     user.status = 1;
-    user.activated = 0;
+    user.activated = false;
     user.password = crypto.createHash('sha256').update(user.password).digest('hex');
 
     var queryAdd = new Promise(function (resolve, reject) {
