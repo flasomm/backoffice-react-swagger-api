@@ -1,29 +1,28 @@
 import React, {Component} from 'react';
 import Helmet from 'react-helmet';
-import {Footer} from 'components';
+import {Footer, Input} from 'components';
 import auth from '../utils/auth';
 
 export default class Login extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {type: '', message: ''};
+        this.state = {type: '', message: '', email: '', password: ''};
+        this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    handleChange(key) {
-        return function (e) {
-            var state = {};
-            state[key] = e.target.value;
-            this.setState(state);
-        }.bind(this);
+    handleChange(value, key) {
+        var state = {};
+        state[key] = value;
+        this.setState(state);
     }
 
     onSubmit(e) {
         e.preventDefault();
         let callback = auth.login(
-            this.refs.email.value,
-            this.refs.password.value,
+            this.state.email,
+            this.state.password,
             function (token, res) {
                 switch (res.status) {
                     case 200:
@@ -61,25 +60,33 @@ export default class Login extends Component {
                         <form id="loginForm" name="loginForm" onSubmit={this.onSubmit}>
                             <div className="form-group">
                                 <label htmlFor="email" className="control-label">Email address</label>
-                                <input type="email"
-                                       required
-                                       ref="email"
-                                       maxLength="30"
-                                       onChange={this.handleChange('email')}
-                                       placeholder="Your email"
-                                       id="email"
-                                       className="form-control"/>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    name="email"
+                                    ref="email"
+                                    className="form-control"
+                                    value={this.state.email}
+                                    required={true}
+                                    placeholder="Your email"
+                                    maxLength="100"
+                                    onChange={this.handleChange}
+                                />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="password" className="control-label">Password</label>
-                                <input type="password"
-                                       required
-                                       ref="password"
-                                       onChange={this.handleChange('password')}
-                                       maxLength="30"
-                                       placeholder="Your password"
-                                       id="password"
-                                       className="form-control"/>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    name="password"
+                                    ref="password"
+                                    className="form-control"
+                                    value={this.state.password}
+                                    required={true}
+                                    placeholder="Your password"
+                                    maxLength="30"
+                                    onChange={this.handleChange}
+                                />
                             </div>
                             { this.renderMessage() }
                             <span className="help-block">

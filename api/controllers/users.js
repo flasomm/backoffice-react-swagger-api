@@ -4,8 +4,9 @@ var Promise = require('es6-promise').Promise;
 var mongo = require('mongodb');
 var winston = require('winston');
 var jwt = require('jsonwebtoken');
-var secret = require('config').jwtSecret;
+var config = require('config');
 var crypto = require('crypto');
+var _ = require('lodash');
 
 module.exports = {
     getUsers: getUsers,
@@ -82,6 +83,8 @@ function addUser(req, res) {
     user.updated = new Date();
     user.status = 1;
     user.activated = 0;
+    user.password = crypto.createHash('sha256').update(user.password).digest('hex');
+
     var queryAdd = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').insertOne(user, function (err, r) {
@@ -114,6 +117,10 @@ function updateUser(req, res) {
     var user = req.swagger.params.user.value;
     var oid = new mongo.ObjectID(uid);
     user.updated = new Date();
+    if (!_.isNil(user.password)) {
+        user.password = crypto.createHash('sha256').update(user.password).digest('hex');
+    }
+
     var queryUpdate = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOneAndUpdate({_id: oid},
@@ -201,7 +208,7 @@ function login(req, res) {
                 lastname: doc.lastname,
                 email: doc.email
             };
-            var token = jwt.sign(profile, secret, {
+            var token = jwt.sign(profile, config.jwtSecret, {
                 expiresIn: 60 * 60 * 24 // expires in 24 hours
             });
 
@@ -223,7 +230,7 @@ function login(req, res) {
  */
 function validateToken(req, res) {
     var body = req.swagger.params.jwt.value;
-    jwt.verify(body.token, secret, function (err, user) {
+    jwt.verify(body.token, config.jwtSecret, function (err, user) {
         if (err) {
             res.status(401).json({'code': 1, 'message': err.message});
         }
