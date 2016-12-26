@@ -24,13 +24,19 @@ export default class App extends Component {
         const styles = require('./styles.css');
         return (
             <div>
-                <nav className="navbar navbar-inverse navbar-fixed-top">
+                <nav className="navbar navbar-default navbar-fixed-top">
                     <div className="container">
                         <div className="navbar-header">
                             <a className="navbar-brand" href="/">
                                 <span>{config.app.title}</span>
                             </a>
-                            <button type="button" className="navbar-toggle collapsed">
+                            <button type="button"
+                                    className="navbar-toggle collapsed"
+                                    data-toggle="collapse"
+                                    data-target="#navbar"
+                                    aria-expanded="false"
+                                    aria-controls="navbar"
+                            >
                                 <span className="sr-only">Toggle navigation</span>
                                 <span className="icon-bar"></span>
                                 <span className="icon-bar"></span>
@@ -39,14 +45,50 @@ export default class App extends Component {
                         </div>
                         <div className="navbar-collapse collapse">
                             {this.state.isAuthenticated ? (
-                                <ul className="nav navbar-nav navbar-right">
-                                    <li role="presentation" className="dashboard-link">
-                                        <Link to="/dashboard">Dashboard</Link>
-                                    </li>
-                                    <li role="presentation" className="logout-link">
-                                        <Link to="/logout">Logout</Link>
-                                    </li>
-                                </ul>
+                                <div>
+                                    <ul className="nav navbar-nav">
+                                        <li role="presentation" className="dashboard-link">
+                                            <Link to="/dashboard">Dashboard</Link>
+                                        </li>
+                                        <li>
+                                            <a href="/profiles">Profiles</a>
+                                        </li>
+                                        <li>
+                                            <a href="/favorites">Favorites</a>
+                                        </li>
+                                    </ul>
+                                    <ul className="nav navbar-nav navbar-right">
+                                        <li className="dropdown">
+                                            <a href="#"
+                                               className="dropdown-toggle"
+                                               data-toggle="dropdown"
+                                               role="button"
+                                               aria-haspopup="true"
+                                               aria-expanded="false">
+                                                <span className="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                                <span className="caret"></span>
+                                            </a>
+                                            <ul className="dropdown-menu">
+                                                <li>
+                                                    <a href="#">
+                                                        <span className="glyphicon glyphicon-user" aria-hidden="true"></span> My Profile
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        <span className="glyphicon glyphicon-cog" aria-hidden="true"></span> Options
+                                                    </a>
+                                                </li>
+                                                <li className="divider"></li>
+                                                <li role="presentation" className="logout-link">
+                                                    <Link to="/logout">
+                                                        <span className="glyphicon glyphicon-off" aria-hidden="true"></span> Logout
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
                             ) : (
                                 <ul className="nav navbar-nav navbar-right">
                                     <li role="presentation">

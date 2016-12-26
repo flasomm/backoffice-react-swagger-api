@@ -3,7 +3,7 @@
 
     var MongoClient = require('mongodb').MongoClient;
     var SwaggerExpress = require('swagger-express-mw');
-    var SwaggerUi = require('swagger-tools/middleware/swagger-ui');
+        var SwaggerUi = require('swagger-tools/middleware/swagger-ui');
     var jwt = require('jsonwebtoken');
     var app = require('express')();
     var config = require('config');

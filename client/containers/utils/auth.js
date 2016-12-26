@@ -1,12 +1,16 @@
 import cookie from 'react-cookie';
 import 'whatwg-fetch';
 import {isNil} from 'lodash';
-var config = require('config');
+const config = require('config');
 
-module.exports = {
+class Auth {
+
+    constructor() {
+        this.serverUrl = this.getServerUrl();
+    }
 
     login(email, password, cb, withCookie) {
-        fetch('http://' + config.api.host + ':' + config.api.port + '/login', {
+        fetch(this.serverUrl + '/login', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -24,7 +28,7 @@ module.exports = {
                 cb(json.token, res);
             });
         });
-    },
+    }
 
     verifyToken() {
         var self = this;
@@ -32,7 +36,7 @@ module.exports = {
         if (!token) {
             return;
         }
-        fetch('http://' + config.api.host + ':' + config.api.port + '/validateToken', {
+        fetch(this.serverUrl + '/validateToken', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -47,17 +51,23 @@ module.exports = {
                 window.location.replace("/login");
             }
         });
-    },
+    }
+
+    getServerUrl() {
+        return `http://${config.api.host}:${config.api.port}`;
+    }
 
     getToken() {
         return cookie.load('jwtToken');
-    },
+    }
 
     logout() {
         cookie.remove('jwtToken', {path: '/'});
-    },
+    }
 
     isAuthenticated() {
         return !!cookie.load('jwtToken');
     }
-};
+}
+
+module.exports = new Auth();

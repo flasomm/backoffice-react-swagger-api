@@ -3,6 +3,9 @@ import Helmet from 'react-helmet';
 import {Footer, Input} from 'components';
 import auth from '../utils/auth';
 
+/**
+ * Login component class.
+ */
 export default class Login extends Component {
 
     constructor(props) {

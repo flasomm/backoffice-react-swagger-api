@@ -1,12 +1,12 @@
 'use strict';
 
-var Promise = require('es6-promise').Promise;
-var mongo = require('mongodb');
-var winston = require('winston');
-var jwt = require('jsonwebtoken');
-var config = require('config');
-var crypto = require('crypto');
-var _ = require('lodash');
+const Promise = require('es6-promise').Promise;
+const mongo = require('mongodb');
+const winston = require('winston');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+const crypto = require('crypto');
+const _ = require('lodash');
 
 module.exports = {
     getUsers: getUsers,
@@ -25,9 +25,9 @@ module.exports = {
  * @param res
  */
 function getUsers(req, res) {
-    var skip = req.swagger.params.skip.value;
-    var limit = req.swagger.params.limit.value;
-    var queryUsers = new Promise(function (resolve, reject) {
+    let skip = req.swagger.params.skip.value;
+    let limit = req.swagger.params.limit.value;
+    let queryUsers = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').find({}, {skip: skip, limit: limit}).toArray(function (err, docs) {
             if (err) return reject(err);
@@ -50,9 +50,9 @@ function getUsers(req, res) {
  * @param res
  */
 function getUserById(req, res) {
-    var uid = req.swagger.params.uid.value;
-    var oid = new mongo.ObjectID(uid);
-    var queryUser = new Promise(function (resolve, reject) {
+    let uid = req.swagger.params.uid.value;
+    let oid = new mongo.ObjectID(uid);
+    let queryUser = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOne({_id: oid}, function (err, doc) {
             if (err) return reject(err);
@@ -78,14 +78,14 @@ function getUserById(req, res) {
  * @param res
  */
 function addUser(req, res) {
-    var user = req.swagger.params.user.value;
+    let user = req.swagger.params.user.value;
     user.created = new Date();
     user.updated = new Date();
     user.status = 1;
     user.activated = false;
     user.password = crypto.createHash('sha256').update(user.password).digest('hex');
 
-    var queryAdd = new Promise(function (resolve, reject) {
+    let queryAdd = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').insertOne(user, function (err, r) {
             if (err) return reject(err);
@@ -113,15 +113,15 @@ function addUser(req, res) {
  * @param res
  */
 function updateUser(req, res) {
-    var uid = req.swagger.params.uid.value;
-    var user = req.swagger.params.user.value;
-    var oid = new mongo.ObjectID(uid);
+    let uid = req.swagger.params.uid.value;
+    let user = req.swagger.params.user.value;
+    let oid = new mongo.ObjectID(uid);
     user.updated = new Date();
     if (!_.isNil(user.password)) {
         user.password = crypto.createHash('sha256').update(user.password).digest('hex');
     }
 
-    var queryUpdate = new Promise(function (resolve, reject) {
+    let queryUpdate = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOneAndUpdate({_id: oid},
             {$set: user},
@@ -155,9 +155,9 @@ function updateUser(req, res) {
  * @param res
  */
 function deleteUser(req, res) {
-    var uid = req.swagger.params.uid.value;
-    var oid = new mongo.ObjectID(uid);
-    var queryDelete = new Promise(function (resolve, reject) {
+    let uid = req.swagger.params.uid.value;
+    let oid = new mongo.ObjectID(uid);
+    let queryDelete = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOneAndDelete({_id: oid}, function (err, r) {
             if (err) return reject(err);
@@ -185,9 +185,9 @@ function deleteUser(req, res) {
  * @param res
  */
 function login(req, res) {
-    var credential = req.swagger.params.credential.value;
-    var hash = crypto.createHash('sha256').update(credential.password).digest('hex');
-    var queryUser = new Promise(function (resolve, reject) {
+    let credential = req.swagger.params.credential.value;
+    let hash = crypto.createHash('sha256').update(credential.password).digest('hex');
+    let queryUser = new Promise(function (resolve, reject) {
         const db = req.app.locals.db;
         db.collection('users').findOne(
             {email: credential.email, password: hash, activated: true},
@@ -201,14 +201,14 @@ function login(req, res) {
         if (doc === null) {
             res.status(404).json({'message': 'User not found'});
         } else {
-            var profile = {
+            let profile = {
                 id: doc._id,
                 username: doc.username,
                 firstname: doc.firstname,
                 lastname: doc.lastname,
                 email: doc.email
             };
-            var token = jwt.sign(profile, config.jwtSecret, {
+            let token = jwt.sign(profile, config.jwtSecret, {
                 expiresIn: 60 * 60 * 24 // expires in 24 hours
             });
 
@@ -229,15 +229,15 @@ function login(req, res) {
  * @param res
  */
 function validateToken(req, res) {
-    var body = req.swagger.params.jwt.value;
+    let body = req.swagger.params.jwt.value;
     jwt.verify(body.token, config.jwtSecret, function (err, user) {
         if (err) {
             res.status(401).json({'code': 1, 'message': err.message});
         }
 
         if (user) {
-            var oid = new mongo.ObjectID(user.id);
-            var queryUser = new Promise(function (resolve, reject) {
+            let oid = new mongo.ObjectID(user.id);
+            let queryUser = new Promise(function (resolve, reject) {
                 const db = req.app.locals.db;
                 db.collection('users').findOne({_id: oid}, function (err, doc) {
                     if (err) return reject(err);
