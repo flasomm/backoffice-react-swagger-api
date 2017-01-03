@@ -48,11 +48,13 @@ export default class Profiles extends Component {
             <div className="container">
                 <div className="row">
                     <h1>Profiles</h1>
-                    <BootstrapTable data={ this.state.profiles }>
-                        <TableHeaderColumn dataField='_id' isKey={ true }>ID</TableHeaderColumn>
+                    <BootstrapTable data={ this.state.profiles } pagination>
+                        <TableHeaderColumn dataField='email' isKey={ true }>Email</TableHeaderColumn>
+                        <TableHeaderColumn dataField='username'>Username</TableHeaderColumn>
                         <TableHeaderColumn dataField='firstname'>Firstname</TableHeaderColumn>
                         <TableHeaderColumn dataField='lastname'>Lastname</TableHeaderColumn>
-                        <TableHeaderColumn dataField='email'>Email</TableHeaderColumn>
+                        <TableHeaderColumn dataField='gender'>Gender</TableHeaderColumn>
+                        <TableHeaderColumn dataField='group'>Group</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </div>

@@ -1,21 +1,21 @@
 (function () {
     'use strict';
 
-    var MongoClient = require('mongodb').MongoClient;
-    var SwaggerExpress = require('swagger-express-mw');
-        var SwaggerUi = require('swagger-tools/middleware/swagger-ui');
-    var jwt = require('jsonwebtoken');
-    var app = require('express')();
-    var config = require('config');
+    const MongoClient = require('mongodb').MongoClient;
+    const SwaggerExpress = require('swagger-express-mw');
+    const SwaggerUi = require('swagger-tools/middleware/swagger-ui');
+    const jwt = require('jsonwebtoken');
+    const app = require('express')();
+    const config = require('config');
 
-    var swaggerConfig = {
+    let swaggerConfig = {
         appRoot: __dirname,
         mapErrorsToJson: true,
         swaggerSecurityHandlers: {
-            api_key: function (req, authOrSecDef, scopes, next) {
+            api_key: (req, authOrSecDef, scopes, next) => {
                 if (scopes) {
-                    jwt.verify(scopes, config.get('jwtSecret'), {}, function(err) {
-                        if(err) {
+                    jwt.verify(scopes, config.get('jwtSecret'), {}, (err) => {
+                        if (err) {
                             return cb(new Error('Invalid token'));
                         }
 
@@ -28,7 +28,7 @@
         }
     };
 
-    SwaggerExpress.create(swaggerConfig, function (err, swaggerExpress) {
+    SwaggerExpress.create(swaggerConfig, (err, swaggerExpress) => {
         if (err) {
             throw err;
         }
@@ -36,7 +36,7 @@
         // Add swagger-ui (This must be before swaggerExpress.register)
         app.use(SwaggerUi(swaggerExpress.runner.swagger));
         // Add headers
-        app.use(function (req, res, next) {
+        app.use((req, res, next) => {
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
             res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');

@@ -1,11 +1,11 @@
 'use strict';
 require('babel-polyfill');
-var path = require("path");
-var extend = require('util')._extend;
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+const path = require("path");
+const extend = require('util')._extend;
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
 module.exports = {
     context: path.resolve(__dirname, '..'),

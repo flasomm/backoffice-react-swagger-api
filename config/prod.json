@@ -14,7 +14,7 @@
     "port": 25,
     "from": "noreply@physalix.com"
   },
-  "database": "mongodb://localhost/test",
+    "database": "mongodb://localhost/test",
   "jwtSecret": "replacethis",
   "recaptchaId": "6LfHgtkSAAAAAEJjL-RqLm-MVbk6ChP_c33fmCcN"
 }
