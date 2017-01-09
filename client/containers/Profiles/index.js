@@ -110,14 +110,50 @@ export default class Profiles extends Component {
      * @returns {XML}
      */
     actionsFormatter(cell, row, enumObject, index) {
-        console.log(cell);
-        console.log(row);
-        console.log(enumObject);
-        console.log(index);
+        let editForm = [];
+        Object.keys(row).map((key) => {
+            editForm.push(
+                <div className='form-group' key={ key }>
+                    <label>{ key } : </label>
+                    <input ref={ key } type='text' defaultValue={row[key]}/>
+                </div>
+            );
+        });
         return (
-            <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#editModal">
-                <span className="glyphicon glyphicon-pencil"></span>
-            </button>
+            <div>
+                <button type="button" className="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">
+                    <span className="glyphicon glyphicon-pencil"></span>
+                </button>
+                <div className="modal fade"
+                     id="editModal"
+                     tabIndex="-1"
+                     role="dialog"
+                     aria-labelledby="editModalLabel"
+                     aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="editModalLabel">Modal title</h5>
+                                <button type="button" className="close" data-dismiss="editModal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                {
+                                    editForm.map((html) => {
+                                        return (html);
+                                    })
+                                }
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         );
     }
 
@@ -155,29 +191,6 @@ export default class Profiles extends Component {
                         <TableHeaderColumn dataField='group'>Group</TableHeaderColumn>
                         <TableHeaderColumn dataField='_id' dataFormat={ this.actionsFormatter }></TableHeaderColumn>
                     </BootstrapTable>
-                </div>
-                <div className="modal fade"
-                     id="editModal"
-                     tabIndex="-1"
-                     role="dialog"
-                     aria-labelledby="editModalLabel"
-                     aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="editModalLabel">Modal title</h5>
-                                <button type="button" className="close" data-dismiss="editModal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary">Save changes</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         )
