@@ -111,21 +111,22 @@ export default class Profiles extends Component {
      */
     actionsFormatter(cell, row, enumObject, index) {
         let editForm = [];
+        let modalId = `editModal-${cell}`;
         Object.keys(row).map((key) => {
             editForm.push(
                 <div className='form-group' key={ key }>
                     <label>{ key } : </label>
-                    <input ref={ key } type='text' defaultValue={row[key]}/>
+                    <input ref={ key } type='text' id={ key } defaultValue={row[key]} className="form-control"/>
                 </div>
             );
         });
         return (
             <div>
-                <button type="button" className="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">
+                <button type="button" className="btn btn-primary btn-sm" data-toggle="modal" data-target={'#'+modalId}>
                     <span className="glyphicon glyphicon-pencil"></span>
                 </button>
                 <div className="modal fade"
-                     id="editModal"
+                     id={modalId}
                      tabIndex="-1"
                      role="dialog"
                      aria-labelledby="editModalLabel"
@@ -133,8 +134,8 @@ export default class Profiles extends Component {
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="editModalLabel">Modal title</h5>
-                                <button type="button" className="close" data-dismiss="editModal" aria-label="Close">
+                                <h5 className="modal-title" id="editModalLabel">Edit Profile id: {cell}</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
