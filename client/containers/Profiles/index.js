@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import auth from '../utils/auth'
 import 'whatwg-fetch';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-
+import Modal from 'react-modal';
 
 /**
  * Manage all users profiles.
@@ -15,7 +15,15 @@ export default class Profiles extends Component {
      */
     constructor(props) {
         super(props);
-        this.state = {profiles: []};
+        this.state = {profiles: [], modalIsOpen: false};
+        this.openModal = this.openModal.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
+    }
+
+    componentWillMount() {
+        this.getProfilesData((data) => {
+            this.setState({profiles: data});
+        });
     }
 
     /**
@@ -38,12 +46,6 @@ export default class Profiles extends Component {
         });
     }
 
-    componentWillMount() {
-        this.getProfilesData((data) => {
-            this.setState({profiles: data});
-        });
-    }
-
     /**
      *
      * @param onClick
@@ -58,6 +60,12 @@ export default class Profiles extends Component {
      */
     handleInsertButtonClick = (onClick) => {
         onClick();
+    }
+
+    handleModalClose() {
+        // opportunity to validate something and keep the modal open even if it
+        // requested to be closed
+        this.setState({modalIsOpen: false});
     }
 
     /**
@@ -92,6 +100,24 @@ export default class Profiles extends Component {
         );
     }
 
+
+    createEditForm = (object) => {
+        let editForm = [];
+        Object.keys(object).map((key) => {
+            editForm.push(
+                <div className='form-group' key={ key }>
+                    <label>{ key } : </label>
+                    <input ref={ key } type='text' id={ key } defaultValue={row[key]} className="form-control"/>
+                </div>
+            );
+        });
+        return (editForm.join());
+    }
+
+    openModal() {
+        this.setState({modalIsOpen: true});
+    }
+
     /**
      *
      * @param cell
@@ -110,51 +136,10 @@ export default class Profiles extends Component {
      * @returns {XML}
      */
     actionsFormatter(cell, row, enumObject, index) {
-        let editForm = [];
-        let modalId = `editModal-${cell}`;
-        Object.keys(row).map((key) => {
-            editForm.push(
-                <div className='form-group' key={ key }>
-                    <label>{ key } : </label>
-                    <input ref={ key } type='text' id={ key } defaultValue={row[key]} className="form-control"/>
-                </div>
-            );
-        });
         return (
-            <div>
-                <button type="button" className="btn btn-primary btn-sm" data-toggle="modal" data-target={'#'+modalId}>
-                    <span className="glyphicon glyphicon-pencil"></span>
-                </button>
-                <div className="modal fade"
-                     id={modalId}
-                     tabIndex="-1"
-                     role="dialog"
-                     aria-labelledby="editModalLabel"
-                     aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="editModalLabel">Edit Profile id: {cell}</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                {
-                                    editForm.map((html) => {
-                                        return (html);
-                                    })
-                                }
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary">Save changes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            <button onClick={this.openModal}>
+                <span className="glyphicon glyphicon-pencil"></span>
+            </button>
         );
     }
 
@@ -193,6 +178,13 @@ export default class Profiles extends Component {
                         <TableHeaderColumn dataField='_id' dataFormat={ this.actionsFormatter }></TableHeaderColumn>
                     </BootstrapTable>
                 </div>
+                <Modal
+                    isOpen={this.state.modalIsOpen}
+                    onRequestClose={this.handleModalClose}
+                    contentLabel="Example Modal"
+                >
+                    <div>Test</div>
+                </Modal>
             </div>
         )
     }
