@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import auth from '../utils/auth'
 import 'whatwg-fetch';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import Modal from 'react-modal';
+
 
 /**
  * Manage all users profiles.
@@ -15,13 +15,14 @@ export default class Profiles extends Component {
      */
     constructor(props) {
         super(props);
-        this.state = {profiles: [], modalIsOpen: false};
-        this.openModal = this.openModal.bind(this);
-        this.handleModalClose = this.handleModalClose.bind(this);
+        this.state = {profiles: []};
     }
 
+    /**
+     *
+     */
     componentWillMount() {
-        this.getProfilesData((data) => {
+        this.fetchProfileData((data) => {
             this.setState({profiles: data});
         });
     }
@@ -30,8 +31,8 @@ export default class Profiles extends Component {
      *
      * @param cb
      */
-    getProfilesData(cb) {
-        fetch(auth.getServerUrl() + '/users?api_key=' + auth.getToken(), {
+    fetchProfileData(cb) {
+        fetch(`${auth.getServerUrl()}/users?api_key=${auth.getToken()}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -41,6 +42,26 @@ export default class Profiles extends Component {
             return res.json().then(function (data) {
                 if (res.status === 200) {
                     cb(data);
+                }
+            });
+        });
+    }
+
+    /**
+     *
+     * @param rowKeys
+     */
+    onAfterDeleteRow(id) {
+        fetch(`${auth.getServerUrl()}/user/${id}?api_key=${auth.getToken()}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(function (res) {
+            return res.json().then(function (data) {
+                if (res.status === 200) {
+                    console.log(data);
                 }
             });
         });
@@ -60,12 +81,6 @@ export default class Profiles extends Component {
      */
     handleInsertButtonClick = (onClick) => {
         onClick();
-    }
-
-    handleModalClose() {
-        // opportunity to validate something and keep the modal open even if it
-        // requested to be closed
-        this.setState({modalIsOpen: false});
     }
 
     /**
@@ -100,24 +115,6 @@ export default class Profiles extends Component {
         );
     }
 
-
-    createEditForm = (object) => {
-        let editForm = [];
-        Object.keys(object).map((key) => {
-            editForm.push(
-                <div className='form-group' key={ key }>
-                    <label>{ key } : </label>
-                    <input ref={ key } type='text' id={ key } defaultValue={row[key]} className="form-control"/>
-                </div>
-            );
-        });
-        return (editForm.join());
-    }
-
-    openModal() {
-        this.setState({modalIsOpen: true});
-    }
-
     /**
      *
      * @param cell
@@ -131,16 +128,10 @@ export default class Profiles extends Component {
      *
      * @param cell
      * @param row
-     * @param enumObject
-     * @param index
      * @returns {XML}
      */
-    actionsFormatter(cell, row, enumObject, index) {
-        return (
-            <button onClick={this.openModal}>
-                <span className="glyphicon glyphicon-pencil"></span>
-            </button>
-        );
+    actionsFormatter(cell, row) {
+        return `<a href="/profile/${cell}" class="btn btn-primary btn-xs" role="button" aria-pressed="true">Edit</a>`;
     }
 
     /**
@@ -150,7 +141,8 @@ export default class Profiles extends Component {
     render() {
         const options = {
             deleteBtn: this.createDeleteButton,
-            insertBtn: this.createInsertButton
+            insertBtn: this.createInsertButton,
+            afterDeleteRow: this.onAfterDeleteRow
         };
         const selectRowProp = {
             mode: 'checkbox'
@@ -169,23 +161,17 @@ export default class Profiles extends Component {
                         pagination
                         search
                     >
-                        <TableHeaderColumn dataField='email' isKey={true}>Email</TableHeaderColumn>
+                        <TableHeaderColumn dataField='email'>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='username'>Username</TableHeaderColumn>
                         <TableHeaderColumn dataField='firstname'>Firstname</TableHeaderColumn>
                         <TableHeaderColumn dataField='lastname'>Lastname</TableHeaderColumn>
                         <TableHeaderColumn dataField='gender' dataFormat={this.genderFormatter}>Gender</TableHeaderColumn>
                         <TableHeaderColumn dataField='group'>Group</TableHeaderColumn>
-                        <TableHeaderColumn dataField='_id' dataFormat={ this.actionsFormatter }></TableHeaderColumn>
+                        <TableHeaderColumn dataField='_id' isKey={true} dataFormat={ this.actionsFormatter }></TableHeaderColumn>
                     </BootstrapTable>
                 </div>
-                <Modal
-                    isOpen={this.state.modalIsOpen}
-                    onRequestClose={this.handleModalClose}
-                    contentLabel="Example Modal"
-                >
-                    <div>Test</div>
-                </Modal>
             </div>
         )
     }
+
 }
