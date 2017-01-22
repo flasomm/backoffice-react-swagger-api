@@ -11,6 +11,7 @@ import {
     ForgotPassword,
     Dashboard,
     Profiles,
+    Profile,
     NotFound
 } from 'containers';
 
@@ -34,6 +35,7 @@ export default () => {
             <Route path="forgot-password" component={ForgotPassword}/>
             <Route path="dashboard" component={Dashboard} onEnter={requireAuth}/>
             <Route path="profiles" component={Profiles} onEnter={requireAuth}/>
+            <Route path="profile/:id" component={Profile} onEnter={requireAuth}/>
             <Route path="*" component={NotFound} status={404}/>
         </Route>
     );

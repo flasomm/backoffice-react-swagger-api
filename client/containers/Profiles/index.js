@@ -15,14 +15,14 @@ export default class Profiles extends Component {
      */
     constructor(props) {
         super(props);
-        this.state = {profiles: []};
+        this.state = {profiles: [], message: ""};
     }
 
     /**
      *
      */
     componentWillMount() {
-        this.fetchProfileData((data) => {
+        this.fetchProfilesData((data) => {
             this.setState({profiles: data});
         });
     }
@@ -31,7 +31,7 @@ export default class Profiles extends Component {
      *
      * @param cb
      */
-    fetchProfileData(cb) {
+    fetchProfilesData(cb) {
         fetch(`${auth.getServerUrl()}/users?api_key=${auth.getToken()}`, {
             method: 'GET',
             headers: {
@@ -61,7 +61,7 @@ export default class Profiles extends Component {
         }).then(function (res) {
             return res.json().then(function (data) {
                 if (res.status === 200) {
-                    console.log(data);
+                    this.setState({message: `User ${data.email} deleted with success`});
                 }
             });
         });

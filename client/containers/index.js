@@ -7,4 +7,5 @@ export SignupSuccess from './SignupSuccess/index';
 export ForgotPassword from './ForgotPassword/index';
 export Dashboard from './Dashboard/index';
 export Profiles from './Profiles/index';
+export Profile from './Profile/index';
 export NotFound from './NotFound/index';
