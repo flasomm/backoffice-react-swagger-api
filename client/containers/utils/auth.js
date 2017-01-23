@@ -24,6 +24,9 @@ class Auth {
             return res.json().then(function (json) {
                 if (res.ok && !isNil(json.token) && withCookie === true) {
                     cookie.save('jwtToken', json.token, {path: '/'});
+                    cookie.save('uid', json.id, {path: '/'});
+                    cookie.save('username', json.username, {path: '/'});
+                    cookie.save('email', email, {path: '/'});
                 }
                 cb(json.token, res);
             });
@@ -61,7 +64,18 @@ class Auth {
         return cookie.load('jwtToken');
     }
 
+    getUserId() {
+        return cookie.load('uid');
+    }
+
+    getUsername() {
+        return cookie.load('username');
+    }
+
     logout() {
+        cookie.remove('email', {path: '/'});
+        cookie.remove('uid', {path: '/'});
+        cookie.remove('username', {path: '/'});
         cookie.remove('jwtToken', {path: '/'});
     }
 

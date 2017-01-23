@@ -65,12 +65,13 @@ export default class App extends Component {
                                                role="button"
                                                aria-haspopup="true"
                                                aria-expanded="false">
+                                                <span className="capitalize margin-right-10">{auth.getUsername()}</span>
                                                 <span className="glyphicon glyphicon-user" aria-hidden="true"></span>
                                                 <span className="caret"></span>
                                             </a>
                                             <ul className="dropdown-menu">
                                                 <li>
-                                                    <a href="#">
+                                                    <a href={`/profile/${auth.getUserId()}`}>
                                                         <span className="glyphicon glyphicon-user" aria-hidden="true"></span> My Profile
                                                     </a>
                                                 </li>

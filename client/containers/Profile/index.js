@@ -55,6 +55,10 @@ export default class Profiles extends Component {
         });
     }
 
+    displayPageTitle() {
+        return this.props.params.id === auth.getUserId() ? "Your Profile" : `Profile: ${this.state.profile.firstname} ${this.state.profile.lastname}`;
+    }
+
     /**
      *
      * @returns {XML}
@@ -63,7 +67,7 @@ export default class Profiles extends Component {
         return (
             <div className="container">
                 <div className="row">
-                    <h1>Profile: {this.state.profile.firstname} {this.state.profile.lastname}</h1>
+                    <h1>{this.displayPageTitle()}</h1>
                     <hr/>
                     <dl className="dl-horizontal">
                         <dt>Email</dt>

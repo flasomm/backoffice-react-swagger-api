@@ -223,6 +223,8 @@ function login(req, res) {
             });
 
             res.json({
+                id: profile.id,
+                username: profile.username,
                 token: token
             });
         }
