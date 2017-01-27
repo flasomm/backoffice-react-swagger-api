@@ -24,6 +24,7 @@
     "lodash": "^4.16.6",
     "mongodb": "^2.2.10",
     "react": "^15.3.2",
+    "react-bootstrap": "^0.30.7",
     "react-bootstrap-geosuggest": "^1.25.5",
     "react-bootstrap-table": "^2.9.1",
     "react-cookie": "^0.4.8",

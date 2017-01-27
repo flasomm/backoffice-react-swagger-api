@@ -9,10 +9,11 @@
 
 import React, {Component} from 'react';
 import Helmet from 'react-helmet';
-import {Footer, Input} from 'components';
+import {Footer} from 'components';
 import auth from '../utils/auth'
 import 'whatwg-fetch';
 import dateFormat from 'dateformat';
+import {FormControl, ControlLabel, FormGroup, Panel, Button} from 'react-bootstrap';
 
 /**
  * Manage all users profiles.
@@ -26,6 +27,7 @@ export default class Profiles extends Component {
     constructor(props) {
         super(props);
         this.state = {profile: {}, message: ""};
+        this.handleChange = this.handleChange.bind(this);
     }
 
     /**
@@ -57,10 +59,10 @@ export default class Profiles extends Component {
         });
     }
 
-    handleChange(value, key) {
-        var state = {};
-        state.profile[key] = value;
-        this.setState(state);
+    handleChange(e) {
+        let profile = {};
+        profile[e.target.name] = e.target.value;
+        this.setState({profile: profile});
     }
 
     /**
@@ -101,88 +103,67 @@ export default class Profiles extends Component {
                 </div>
                 <div className="row">
                     <div className="col-lg-12">
-                        <div className="panel panel-default">
-                            <div className="panel-heading">
-                                <span className="panel-title">Basic Form Elements</span>
-                            </div>
-                            <div className="panel-body">
-                                <div className="row">
-                                    <div className="col-lg-6">
-                                        <div className="formEditProfile">
-                                            {this.state.profile.group}
-                                            {this.state.profile.active ? "Yes" : "No"}
-                                            {this.state.profile.gender === 'm' ? 'Male' : 'Female'}
-                                            {dateFormat(this.state.profile.createdAt, "dd/mm/yyyy, HH:MM:ss")}
-                                            {dateFormat(this.state.profile.updatedAt, "dd/mm/yyyy, HH:MM:ss")}
-                                            <form id="loginForm" name="loginForm" onSubmit={this.onSubmit}>
-                                                <div className="form-group">
-                                                    <label htmlFor="email" className="control-label">Email address</label>
-                                                    <Input
-                                                        id="email"
-                                                        type="email"
-                                                        name="email"
-                                                        ref="email"
-                                                        className="form-control"
-                                                        value={this.state.profile.email}
-                                                        required={true}
-                                                        placeholder="Your email"
-                                                        maxLength="100"
-                                                        onChange={this.handleChange}
-                                                    />
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="username" className="control-label">UserName</label>
-                                                    <Input
-                                                        id="username"
-                                                        type="username"
-                                                        name="username"
-                                                        ref="username"
-                                                        className="form-control"
-                                                        value={this.state.profile.username}
-                                                        required={true}
-                                                        placeholder="Your username"
-                                                        maxLength="100"
-                                                        onChange={this.handleChange}
-                                                    />
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="firstname" className="control-label">First Name</label>
-                                                    <Input
-                                                        id="firstname"
-                                                        type="firstname"
-                                                        name="firstname"
-                                                        ref="firstname"
-                                                        className="form-control"
-                                                        value={this.state.profile.firstname}
-                                                        required={true}
-                                                        placeholder="Your firstname"
-                                                        maxLength="100"
-                                                        onChange={this.handleChange}
-                                                    />
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="lastname" className="control-label">Last Name</label>
-                                                    <Input
-                                                        id="lastname"
-                                                        type="lastname"
-                                                        name="lastname"
-                                                        ref="lastname"
-                                                        className="form-control"
-                                                        value={this.state.profile.lastname}
-                                                        required={true}
-                                                        placeholder="Your lastname"
-                                                        maxLength="100"
-                                                        onChange={this.handleChange}
-                                                    />
-                                                </div>
-                                                { this.renderMessage() }
-                                                <button type="submit" className="btn btn-primary">Save</button>
-                                            </form>
-                                        </div>
+                        <Panel header="Panel heading without title">
+                            <div className="row">
+                                <div className="col-lg-6">
+                                    <div className="formEditProfile">
+                                        {this.state.profile.group}
+                                        {this.state.profile.active ? "Yes" : "No"}
+                                        {this.state.profile.gender === 'm' ? 'Male' : 'Female'}
+                                        {dateFormat(this.state.profile.createdAt, "dd/mm/yyyy, HH:MM:ss")}
+                                        {dateFormat(this.state.profile.updatedAt, "dd/mm/yyyy, HH:MM:ss")}
+                                        <form id="loginForm" name="loginForm" onSubmit={this.onSubmit}>
+                                            <FormGroup controlId="formControlsEmail">
+                                                <ControlLabel>Email address</ControlLabel>
+                                                <FormControl
+                                                    type="email"
+                                                    name="email"
+                                                    value={this.state.profile.email}
+                                                    placeholder="Your email"
+                                                    onChange={this.handleChange}
+                                                />
+                                                <FormControl.Feedback />
+                                            </FormGroup>
+                                            <FormGroup controlId="formControlsUsername">
+                                                <ControlLabel>Username</ControlLabel>
+                                                <FormControl
+                                                    type="text"
+                                                    name="username"
+                                                    value={this.state.profile.username}
+                                                    placeholder="Your username"
+                                                    onChange={this.handleChange}
+                                                />
+                                                <FormControl.Feedback />
+                                            </FormGroup>
+                                            <FormGroup controlId="formControlsFirstname">
+                                                <ControlLabel>Firstname</ControlLabel>
+                                                <FormControl
+                                                    type="text"
+                                                    name="firstname"
+                                                    value={this.state.profile.firstname}
+                                                    placeholder="Your firstname"
+                                                    onChange={this.handleChange}
+                                                />
+                                                <FormControl.Feedback />
+                                            </FormGroup>
+                                            <FormGroup controlId="formControlsLastname">
+                                                <ControlLabel>Firstname</ControlLabel>
+                                                <FormControl
+                                                    type="text"
+                                                    name="lastname"
+                                                    value={this.state.profile.lastname}
+                                                    placeholder="Your lastname"
+                                                    onChange={this.handleChange}
+                                                />
+                                                <FormControl.Feedback />
+                                            </FormGroup>
+                                            { this.renderMessage() }
+                                            <Button type="submit" className="btn btn-primary">Update</Button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Panel>
                     </div>
                 </div>
             </div>

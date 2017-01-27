@@ -6,20 +6,111 @@ var config = require('config');
 
 export default class App extends Component {
 
+    /**
+     *
+     * @param props
+     */
     constructor(props) {
         super(props);
         this.state = {isAuthenticated: auth.isAuthenticated()};
         this.updateAuth = this.updateAuth.bind(this);
     }
 
+    /**
+     *
+     * @param isAuthenticated
+     */
     updateAuth(isAuthenticated) {
         this.setState({isAuthenticated: isAuthenticated})
     }
 
+    /**
+     *
+     */
     componentWillMount() {
         auth.verifyToken();
     }
 
+    /**
+     *
+     * @returns {XML}
+     */
+    displayProfileMenu() {
+        if (this.state.isAuthenticated) {
+            return (
+                <ul className="nav navbar-nav navbar-right">
+                    <li className="dropdown">
+                        <a href="#"
+                           className="dropdown-toggle"
+                           data-toggle="dropdown"
+                           role="button"
+                           aria-haspopup="true"
+                           aria-expanded="false">
+                            <span className="capitalize margin-right-10">{auth.getUsername()}</span>
+                            <span className="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            <span className="caret"></span>
+                        </a>
+                        <ul className="dropdown-menu">
+                            <li>
+                                <a href={`/profile/${auth.getUserId()}`}>
+                                    <span className="glyphicon glyphicon-user" aria-hidden="true"></span> My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span className="glyphicon glyphicon-cog" aria-hidden="true"></span> Options
+                                </a>
+                            </li>
+                            <li className="divider"></li>
+                            <li role="presentation" className="logout-link">
+                                <Link to="/logout">
+                                    <span className="glyphicon glyphicon-off" aria-hidden="true"></span> Logout
+                                </Link>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            );
+        }
+
+        return (
+            <ul className="nav navbar-nav navbar-right">
+                <li role="presentation">
+                    <Link to="/signup">Get started for free</Link>
+                </li>
+                <li role="presentation">
+                    <Link to="/login">Login</Link>
+                </li>
+            </ul>
+        )
+    }
+
+    /**
+     *
+     * @returns {XML}
+     */
+    displayMainMenu() {
+        if (this.state.isAuthenticated) {
+            return (
+                <ul className="nav navbar-nav">
+                    <li role="presentation" className="dashboard-link">
+                        <Link to="/dashboard">Dashboard</Link>
+                    </li>
+                    <li>
+                        <a href="/profiles">Profiles</a>
+                    </li>
+                    <li>
+                        <a href="/favorites">Favorites</a>
+                    </li>
+                </ul>
+            );
+        }
+    }
+
+    /**
+     *
+     * @returns {XML}
+     */
     render() {
         const styles = require('./styles.css');
         return (
@@ -44,62 +135,8 @@ export default class App extends Component {
                             </button>
                         </div>
                         <div className="navbar-collapse collapse">
-                            {this.state.isAuthenticated ? (
-                                <div>
-                                    <ul className="nav navbar-nav">
-                                        <li role="presentation" className="dashboard-link">
-                                            <Link to="/dashboard">Dashboard</Link>
-                                        </li>
-                                        <li>
-                                            <a href="/profiles">Profiles</a>
-                                        </li>
-                                        <li>
-                                            <a href="/favorites">Favorites</a>
-                                        </li>
-                                    </ul>
-                                    <ul className="nav navbar-nav navbar-right">
-                                        <li className="dropdown">
-                                            <a href="#"
-                                               className="dropdown-toggle"
-                                               data-toggle="dropdown"
-                                               role="button"
-                                               aria-haspopup="true"
-                                               aria-expanded="false">
-                                                <span className="capitalize margin-right-10">{auth.getUsername()}</span>
-                                                <span className="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                                <span className="caret"></span>
-                                            </a>
-                                            <ul className="dropdown-menu">
-                                                <li>
-                                                    <a href={`/profile/${auth.getUserId()}`}>
-                                                        <span className="glyphicon glyphicon-user" aria-hidden="true"></span> My Profile
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">
-                                                        <span className="glyphicon glyphicon-cog" aria-hidden="true"></span> Options
-                                                    </a>
-                                                </li>
-                                                <li className="divider"></li>
-                                                <li role="presentation" className="logout-link">
-                                                    <Link to="/logout">
-                                                        <span className="glyphicon glyphicon-off" aria-hidden="true"></span> Logout
-                                                    </Link>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            ) : (
-                                <ul className="nav navbar-nav navbar-right">
-                                    <li role="presentation">
-                                        <Link to="/signup">Get started for free</Link>
-                                    </li>
-                                    <li role="presentation">
-                                        <Link to="/login">Login</Link>
-                                    </li>
-                                </ul>
-                            )}
+                            {this.displayMainMenu()}
+                            {this.displayProfileMenu()}
                         </div>
                     </div>
                 </nav>
