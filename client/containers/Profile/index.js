@@ -42,7 +42,7 @@ export default class Profiles extends Component {
      * @param cb
      */
     fetchProfileData(cb) {
-        fetch(`${auth.getServerUrl()}/user/${this.props.params.id}?api_key=${auth.getToken()}`, {
+        fetch(`${auth.getServerUrl()}/users/${this.props.params.id}?api_key=${auth.getToken()}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

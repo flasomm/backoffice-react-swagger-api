@@ -52,7 +52,7 @@ export default class Profiles extends Component {
      * @param rowKeys
      */
     onAfterDeleteRow(id) {
-        fetch(`${auth.getServerUrl()}/user/${id}?api_key=${auth.getToken()}`, {
+        fetch(`${auth.getServerUrl()}/users/${id}?api_key=${auth.getToken()}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

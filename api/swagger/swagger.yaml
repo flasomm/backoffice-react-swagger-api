@@ -65,8 +65,6 @@ paths:
             $ref: '#/definitions/Error'
       security:
         - api_key: []
-  /user:
-    x-swagger-router-controller: users
     post:
       tags:
         - User
@@ -92,7 +90,7 @@ paths:
             $ref: '#/definitions/Error'
       security:
         - api_key: []
-  /user/{uid}:
+  /users/{uid}:
     x-swagger-router-controller: users
     get:
       tags:
