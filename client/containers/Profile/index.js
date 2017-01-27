@@ -60,9 +60,9 @@ export default class Profiles extends Component {
     }
 
     handleChange(e) {
-        let profile = {};
-        profile[e.target.name] = e.target.value;
-        this.setState({profile: profile});
+        let update = {};
+        update[e.target.name] = e.target.value;
+        this.setState({profile: update});
     }
 
     /**
