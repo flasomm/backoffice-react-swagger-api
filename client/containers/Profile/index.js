@@ -13,7 +13,15 @@ import {Footer} from 'components';
 import auth from '../utils/auth'
 import 'whatwg-fetch';
 import dateFormat from 'dateformat';
-import {FormControl, ControlLabel, FormGroup, Panel, Button} from 'react-bootstrap';
+import {
+    FormControl,
+    ControlLabel,
+    FormGroup,
+    Panel,
+    Button,
+    ButtonGroup,
+    Radio
+} from 'react-bootstrap';
 
 /**
  * Manage all users profiles.
@@ -60,9 +68,12 @@ export default class Profiles extends Component {
     }
 
     handleChange(e) {
-        let update = {};
-        update[e.target.name] = e.target.value;
-        this.setState({profile: update});
+        console.log(e.target.name);
+        console.log(e.target.value);
+        let profile = this.state.profile;
+        profile[e.target.name] = e.target.value;
+        console.log(profile);
+        this.setState({profile: profile});
     }
 
     /**
@@ -103,17 +114,12 @@ export default class Profiles extends Component {
                 </div>
                 <div className="row">
                     <div className="col-lg-12">
-                        <Panel header="Panel heading without title">
+                        <Panel header={`Created At: ${dateFormat(this.state.profile.createdAt, "dd/mm/yyyy, HH:MM:ss")}`}>
                             <div className="row">
                                 <div className="col-lg-6">
                                     <div className="formEditProfile">
-                                        {this.state.profile.group}
-                                        {this.state.profile.active ? "Yes" : "No"}
-                                        {this.state.profile.gender === 'm' ? 'Male' : 'Female'}
-                                        {dateFormat(this.state.profile.createdAt, "dd/mm/yyyy, HH:MM:ss")}
-                                        {dateFormat(this.state.profile.updatedAt, "dd/mm/yyyy, HH:MM:ss")}
-                                        <form id="loginForm" name="loginForm" onSubmit={this.onSubmit}>
-                                            <FormGroup controlId="formControlsEmail">
+                                        <form id="editProfileForm" name="loginForm" onSubmit={this.onSubmit}>
+                                            <FormGroup controlId="formEmail">
                                                 <ControlLabel>Email address</ControlLabel>
                                                 <FormControl
                                                     type="email"
@@ -124,7 +130,7 @@ export default class Profiles extends Component {
                                                 />
                                                 <FormControl.Feedback />
                                             </FormGroup>
-                                            <FormGroup controlId="formControlsUsername">
+                                            <FormGroup controlId="formUsername">
                                                 <ControlLabel>Username</ControlLabel>
                                                 <FormControl
                                                     type="text"
@@ -135,7 +141,7 @@ export default class Profiles extends Component {
                                                 />
                                                 <FormControl.Feedback />
                                             </FormGroup>
-                                            <FormGroup controlId="formControlsFirstname">
+                                            <FormGroup controlId="formFirstname">
                                                 <ControlLabel>Firstname</ControlLabel>
                                                 <FormControl
                                                     type="text"
@@ -146,7 +152,7 @@ export default class Profiles extends Component {
                                                 />
                                                 <FormControl.Feedback />
                                             </FormGroup>
-                                            <FormGroup controlId="formControlsLastname">
+                                            <FormGroup controlId="formLastname">
                                                 <ControlLabel>Firstname</ControlLabel>
                                                 <FormControl
                                                     type="text"
@@ -155,6 +161,48 @@ export default class Profiles extends Component {
                                                     placeholder="Your lastname"
                                                     onChange={this.handleChange}
                                                 />
+                                                <FormControl.Feedback />
+                                            </FormGroup>
+                                            <FormGroup controlId="formGender">
+                                                <ControlLabel>Gender</ControlLabel><br/>
+                                                <Radio inline
+                                                       name="gender"
+                                                       value={this.state.profile.gender}
+                                                       onChange={this.handleChange}
+                                                       checked={this.state.profile.gender === 'f'}>Female</Radio>
+                                                <Radio inline
+                                                       name="gender"
+                                                       value={this.state.profile.gender}
+                                                       onChange={this.handleChange}
+                                                       checked={this.state.profile.gender === 'm'}>Male</Radio>
+                                                <FormControl.Feedback />
+                                            </FormGroup>
+                                            <FormGroup controlId="formGroup">
+                                                <ControlLabel>Group</ControlLabel>
+                                                <FormControl
+                                                    componentClass="select"
+                                                    placeholder="Group"
+                                                    name="group"
+                                                    value={this.state.profile.group}
+                                                    onChange={this.handleChange}
+                                                >
+                                                    <option value="member">Member</option>
+                                                    <option value="admin">Admin</option>
+                                                </FormControl>
+                                                <FormControl.Feedback />
+                                            </FormGroup>
+                                            <FormGroup controlId="formActive">
+                                                <ControlLabel>Active</ControlLabel><br/>
+                                                <Radio inline
+                                                       name="active"
+                                                       value={this.state.profile.active}
+                                                       onChange={this.handleChange}
+                                                       checked={this.state.profile.active}>Yes</Radio>
+                                                <Radio inline
+                                                       name="active"
+                                                       value={!this.state.profile.active}
+                                                       onChange={this.handleChange}
+                                                       checked={!this.state.profile.active}>No</Radio>
                                                 <FormControl.Feedback />
                                             </FormGroup>
                                             { this.renderMessage() }
