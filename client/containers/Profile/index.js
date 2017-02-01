@@ -19,7 +19,6 @@ import {
     FormGroup,
     Panel,
     Button,
-    ButtonGroup,
     Radio
 } from 'react-bootstrap';
 
@@ -29,26 +28,30 @@ import {
 export default class Profiles extends Component {
 
     /**
-     *
+     * Default constructor.
      * @param props
      */
     constructor(props) {
         super(props);
         this.state = {profile: {}, message: ""};
         this.handleChange = this.handleChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     /**
-     *
+     * Is invoked immediately before mounting occurs. It is called before render(),
+     * therefore setting state in this method will not trigger a re-rendering.
+     * Avoid introducing any side-effects or subscriptions in this method.
      */
     componentWillMount() {
         this.fetchProfileData((data) => {
+            delete data._id;
             this.setState({profile: data});
         });
     }
 
     /**
-     *
+     * Fetch profile data.
      * @param cb
      */
     fetchProfileData(cb) {
@@ -67,17 +70,40 @@ export default class Profiles extends Component {
         });
     }
 
+    /**
+     * On submit method, update user.
+     * @param e
+     */
+    onSubmit(e) {
+        e.preventDefault();
+        let self = this;
+        fetch(`${auth.getServerUrl()}/users/${this.props.params.id}?api_key=${auth.getToken()}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state.profile)
+        }).then(function (res) {
+            return res.json().then(function (data) {
+                if (res.status === 200) {
+                    self.setState({type: 'info', message: `Profile ${data.username} updated with success`});
+                }
+            });
+        });
+    }
+
+    /**
+     * Bind field name and value to profile in state.
+     * @param e
+     */
     handleChange(e) {
-        console.log(e.target.name);
-        console.log(e.target.value);
         let profile = this.state.profile;
         profile[e.target.name] = e.target.value;
-        console.log(profile);
         this.setState({profile: profile});
     }
 
     /**
-     *
+     * Display page title according to user id.
      * @returns {*}
      */
     displayPageTitle() {
@@ -89,7 +115,7 @@ export default class Profiles extends Component {
     }
 
     /**
-     *
+     * Render message.
      * @returns {XML}
      */
     renderMessage() {
@@ -101,7 +127,7 @@ export default class Profiles extends Component {
     }
 
     /**
-     *
+     * Render methods.
      * @returns {XML}
      */
     render() {
@@ -124,7 +150,7 @@ export default class Profiles extends Component {
                                                 <FormControl
                                                     type="email"
                                                     name="email"
-                                                    value={this.state.profile.email}
+                                                    value={this.state.profile.email || ""}
                                                     placeholder="Your email"
                                                     onChange={this.handleChange}
                                                 />
@@ -135,7 +161,7 @@ export default class Profiles extends Component {
                                                 <FormControl
                                                     type="text"
                                                     name="username"
-                                                    value={this.state.profile.username}
+                                                    value={this.state.profile.username || ""}
                                                     placeholder="Your username"
                                                     onChange={this.handleChange}
                                                 />
@@ -146,7 +172,7 @@ export default class Profiles extends Component {
                                                 <FormControl
                                                     type="text"
                                                     name="firstname"
-                                                    value={this.state.profile.firstname}
+                                                    value={this.state.profile.firstname || ""}
                                                     placeholder="Your firstname"
                                                     onChange={this.handleChange}
                                                 />
@@ -157,7 +183,7 @@ export default class Profiles extends Component {
                                                 <FormControl
                                                     type="text"
                                                     name="lastname"
-                                                    value={this.state.profile.lastname}
+                                                    value={this.state.profile.lastname || ""}
                                                     placeholder="Your lastname"
                                                     onChange={this.handleChange}
                                                 />
@@ -167,12 +193,12 @@ export default class Profiles extends Component {
                                                 <ControlLabel>Gender</ControlLabel><br/>
                                                 <Radio inline
                                                        name="gender"
-                                                       value={this.state.profile.gender}
+                                                       value="f"
                                                        onChange={this.handleChange}
                                                        checked={this.state.profile.gender === 'f'}>Female</Radio>
                                                 <Radio inline
                                                        name="gender"
-                                                       value={this.state.profile.gender}
+                                                       value="m"
                                                        onChange={this.handleChange}
                                                        checked={this.state.profile.gender === 'm'}>Male</Radio>
                                                 <FormControl.Feedback />
@@ -186,23 +212,23 @@ export default class Profiles extends Component {
                                                     value={this.state.profile.group}
                                                     onChange={this.handleChange}
                                                 >
-                                                    <option value="member">Member</option>
+                                                    <option value="user">User</option>
                                                     <option value="admin">Admin</option>
                                                 </FormControl>
                                                 <FormControl.Feedback />
                                             </FormGroup>
                                             <FormGroup controlId="formActive">
-                                                <ControlLabel>Active</ControlLabel><br/>
-                                                <Radio inline
-                                                       name="active"
-                                                       value={this.state.profile.active}
-                                                       onChange={this.handleChange}
-                                                       checked={this.state.profile.active}>Yes</Radio>
-                                                <Radio inline
-                                                       name="active"
-                                                       value={!this.state.profile.active}
-                                                       onChange={this.handleChange}
-                                                       checked={!this.state.profile.active}>No</Radio>
+                                                <ControlLabel>Active</ControlLabel>
+                                                <FormControl
+                                                    componentClass="select"
+                                                    placeholder="Active"
+                                                    name="active"
+                                                    value={this.state.profile.active}
+                                                    onChange={this.handleChange}
+                                                >
+                                                    <option value={true}>Yes</option>
+                                                    <option value={false}>No</option>
+                                                </FormControl>
                                                 <FormControl.Feedback />
                                             </FormGroup>
                                             { this.renderMessage() }
@@ -216,7 +242,6 @@ export default class Profiles extends Component {
                 </div>
             </div>
         );
-
     }
 
 

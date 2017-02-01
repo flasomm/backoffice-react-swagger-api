@@ -3,12 +3,26 @@ import 'whatwg-fetch';
 import {isNil} from 'lodash';
 const config = require('config');
 
+/**
+ * This class is responsible to make authentication and verify token.
+ */
 class Auth {
 
+    /**
+     * Default constructor.
+     */
     constructor() {
         this.serverUrl = this.getServerUrl();
     }
 
+    /**
+     * This method query the /login resource api and save result in a cookie.
+     * 
+     * @param email
+     * @param password
+     * @param cb
+     * @param withCookie
+     */
     login(email, password, cb, withCookie) {
         fetch(this.serverUrl + '/login', {
             method: 'POST',
@@ -34,7 +48,7 @@ class Auth {
     }
 
     verifyToken() {
-        var self = this;
+        let self = this;
         let token = this.getToken();
         if (!token) {
             return;

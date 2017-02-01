@@ -4,24 +4,18 @@ import {Footer} from 'components';
 import auth from '../utils/auth';
 var config = require('config');
 
+/**
+ * Main App class.
+ */
 export default class App extends Component {
 
     /**
-     *
+     * Default constructor.
      * @param props
      */
     constructor(props) {
         super(props);
         this.state = {isAuthenticated: auth.isAuthenticated()};
-        this.updateAuth = this.updateAuth.bind(this);
-    }
-
-    /**
-     *
-     * @param isAuthenticated
-     */
-    updateAuth(isAuthenticated) {
-        this.setState({isAuthenticated: isAuthenticated})
     }
 
     /**
