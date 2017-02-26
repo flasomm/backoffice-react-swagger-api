@@ -25,6 +25,14 @@ export default class Profiles extends Component {
     constructor(props) {
         super(props);
         this.state = {profiles: [], message: ""};
+        this.selectRowProp = {mode: 'checkbox'};
+        this.options = {
+            defaultSortName: 'email',
+            defaultSortOrder: 'asc',
+            insertBtn: this.renderNewButton.bind(this),
+            deleteBtn: this.renderDeleteButton.bind(this),
+            afterDeleteRow: this.onAfterDeleteRow.bind(this)
+        };
     }
 
     /**
@@ -87,40 +95,16 @@ export default class Profiles extends Component {
     /**
      *
      * @param onClick
-     */
-    handleInsertButtonClick = (onClick) => {
-        onClick();
-    }
-
-    /**
-     *
-     * @param onClick
      * @returns {XML}
      */
-    createDeleteButton = (onClick) => {
+    renderDeleteButton = (onClick) => {
         return (
             <DeleteButton
-                btnText='CustomDeleteText'
-                btnContextual='btn-success'
+                btnText='Delete'
+                btnContextual='btn-danger'
                 className='my-custom-class'
                 btnGlyphicon='glyphicon-edit'
                 onClick={ e => this.handleDeleteButtonClick(onClick) }/>
-        );
-    }
-
-    /**
-     *
-     * @param onClick
-     * @returns {XML}
-     */
-    createInsertButton = (onClick) => {
-        return (
-            <InsertButton
-                btnText='CustomInsertText'
-                btnContextual='btn-warning'
-                className='my-custom-class'
-                btnGlyphicon='glyphicon-edit'
-                onClick={ () => this.handleInsertButtonClick(onClick) }/>
         );
     }
 
@@ -144,18 +128,23 @@ export default class Profiles extends Component {
     }
 
     /**
+     * New Button Web Component.
+     * @returns {XML}
+     */
+    renderNewButton() {
+        return (
+            <a className="btn btn-info react-bs-table-add-btn" href="/profile/new" role="button">
+                <i className="glyphicon glyphicon-plus" style={{fontSize:"12px"}}></i>
+                New
+            </a>
+        );
+    }
+
+    /**
      *
      * @returns {XML}
      */
     render() {
-        const options = {
-            deleteBtn: this.createDeleteButton,
-            insertBtn: this.createInsertButton,
-            afterDeleteRow: this.onAfterDeleteRow
-        };
-        const selectRowProp = {
-            mode: 'checkbox'
-        };
         return (
             <div className="container">
                 <div className="row">
@@ -163,8 +152,8 @@ export default class Profiles extends Component {
                     <hr/>
                     <BootstrapTable
                         data={ this.state.profiles }
-                        selectRow={ selectRowProp }
-                        options={ options }
+                        selectRow={ this.selectRowProp }
+                        options={ this.options }
                         deleteRow
                         insertRow
                         pagination
