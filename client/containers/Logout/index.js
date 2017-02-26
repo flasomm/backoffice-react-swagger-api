@@ -1,3 +1,12 @@
+/**
+ * @author   Fabrice Sommavilla <fs@physalix.com>
+ * @company  Physalix
+ * @version  0.1
+ * @date     22/01/2017
+ */
+
+"use strict";
+
 import React, {Component} from 'react';
 import auth from '../utils/auth'
 

@@ -1,3 +1,12 @@
+/**
+ * @author   Fabrice Sommavilla <fs@physalix.com>
+ * @company  Physalix
+ * @version  0.1
+ * @date     22/01/2017
+ */
+
+"use strict";
+
 import React, {Component, PropTypes} from 'react';
 import Helmet from 'react-helmet';
 import Geosuggest from 'react-bootstrap-geosuggest';
@@ -5,7 +14,6 @@ import auth from '../utils/auth';
 var config = require('config');
 var Recaptcha = require('react-recaptcha');
 import {
-    Form,
     FormControl,
     FormGroup,
     Button,
@@ -151,7 +159,7 @@ export default class Signup extends Component {
         return (
             <div className="formSignin">
                 <Helmet title="Sign Up"/>
-                <Form horizontal id="signupForm" name="signupForm" onSubmit={this.onSubmit}>
+                <form id="signupForm" name="signupForm" onSubmit={this.onSubmit}>
                     <div className="form-group has-feedback">
                         <FormGroup controlId="formGender">
                             <Radio inline
@@ -261,7 +269,7 @@ export default class Signup extends Component {
                             {this.state.isSaving ? 'Saving...' : 'Create Account'}
                         </Button>
                     </div>
-                </Form>
+                </form>
             </div>
         );
     }

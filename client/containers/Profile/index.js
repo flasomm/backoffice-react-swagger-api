@@ -14,7 +14,6 @@ import auth from '../utils/auth'
 import 'whatwg-fetch';
 import dateFormat from 'dateformat';
 import {
-    Form,
     FormControl,
     ControlLabel,
     FormGroup,
@@ -152,7 +151,7 @@ export default class Profiles extends Component {
                             <div className="row">
                                 <div className="col-lg-6">
                                     <div className="formEditProfile">
-                                        <Form horizontal id="editProfileForm" name="loginForm" onSubmit={this.onSubmit}>
+                                        <form id="editProfileForm" name="loginForm" onSubmit={this.onSubmit}>
                                             <FormGroup controlId="formEmail">
                                                 <ControlLabel>Email address</ControlLabel>
                                                 <FormControl type="email"
@@ -251,7 +250,7 @@ export default class Profiles extends Component {
                                                     {this.state.isSaving ? 'Saving...' : 'Save'}
                                                 </Button>
                                             </div>
-                                        </Form>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

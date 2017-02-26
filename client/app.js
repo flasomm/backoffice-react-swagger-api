@@ -1,3 +1,12 @@
+/**
+ * @author   Fabrice Sommavilla <fs@physalix.com>
+ * @company  Physalix
+ * @version  0.1
+ * @date     22/01/2017
+ */
+
+"use strict";
+
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
