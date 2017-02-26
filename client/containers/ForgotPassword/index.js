@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
-import {Input} from 'components';
 import Helmet from 'react-helmet';
+import {
+    FormControl,
+    ControlLabel,
+    FormGroup,
+    Button
+} from 'react-bootstrap';
 
 export default class ForgotPassword extends Component {
 
@@ -30,7 +35,7 @@ export default class ForgotPassword extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        if(this.refs.email.isValidEmail()) {
+        if (this.refs.email.isValidEmail()) {
             // send email to reset password
         }
     }
@@ -41,24 +46,20 @@ export default class ForgotPassword extends Component {
             <div className="formForgot">
                 <Helmet title="Forgot password"/>
                 <form id="forgotForm" name="forgotForm" onSubmit={this.onSubmit}>
-                    <div className="form-group has-feedback">
-                        <label htmlFor="formBasicText" className="control-label">Email address</label>
-                        <Input
-                            id="formBasicText"
+                    <FormGroup controlId="formEmail">
+                        <ControlLabel>Email address</ControlLabel>
+                        <FormControl
                             type="email"
                             name="email"
-                            ref="email"
-                            className="form-control"
-                            value={this.state.email}
-                            required={true}
+                            value={this.state.email || ""}
                             placeholder="Your email"
-                            maxLength="100"
                             onChange={this.handleChange}
                         />
-                        { this.renderMessage() }
-                        <br/>
-                        <button type="submit" className="forgot-button btn btn-primary">Send me instructions</button>
-                    </div>
+                        <FormControl.Feedback />
+                    </FormGroup>
+                    { this.renderMessage() }
+                    <br/>
+                    <Button type="submit" className="forgot-button btn btn-primary">Send me instructions</Button>
                 </form>
             </div>
         );

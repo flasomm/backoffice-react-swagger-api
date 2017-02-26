@@ -1,16 +1,26 @@
 import React, {Component, PropTypes} from 'react';
 import Helmet from 'react-helmet';
-import {Input} from 'components';
-import {isEmpty, isNil} from 'lodash';
 import Geosuggest from 'react-bootstrap-geosuggest';
 import auth from '../utils/auth';
 var config = require('config');
 var Recaptcha = require('react-recaptcha');
+import {
+    Form,
+    FormControl,
+    FormGroup,
+    Button,
+    Radio
+} from 'react-bootstrap';
 
 export default class Signup extends Component {
 
     constructor(props) {
         super(props);
+        this.handlePasswordInput = this.handlePasswordInput.bind(this);
+        this.onSuggestSelect = this.onSuggestSelect.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.verifyCaptcha = this.verifyCaptcha.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
         this.state = {
             gender: '',
             type: '',
@@ -27,22 +37,27 @@ export default class Signup extends Component {
             placeId: null,
             recaptcha: false
         };
-        this.handlePasswordInput = this.handlePasswordInput.bind(this);
-        this.isConfirmedPassword = this.isConfirmedPassword.bind(this);
-        this.onSuggestSelect = this.onSuggestSelect.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.verifyCaptcha = this.verifyCaptcha.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
     }
 
-    handleChange(value, key) {
-        var state = {};
-        state[key] = value;
-        this.setState(state);
+    handleChange(e) {
+        this.state.hasChanged = true;
+        this.state.message = "";
+        this.renderMessage();
+        this.state[e.target.name] = e.target.value;
+        this.forceUpdate();
+    }
+
+    handlePasswordInput(e) {
+        if (this.state.password && e.target.value !== this.state.password) {
+            this.setState({type: 'danger', message: 'Passwords must match!'});
+        }
+        this.state.message = "";
+        this.renderMessage();
+        this.setState({confirmPassword: e.target.value});
     }
 
     onSuggestSelect(suggest) {
-        if (!isEmpty(suggest)) {
+        if (suggest) {
             this.setState({
                 city: suggest.label,
                 latitude: suggest.location.lat,
@@ -52,19 +67,8 @@ export default class Signup extends Component {
         }
     }
 
-    handlePasswordInput(value) {
-        if (!isEmpty(this.state.confirmPassword)) {
-            this.refs.confirmPassword.validate(value);
-        }
-        this.setState({password: value});
-    }
-
-    isConfirmedPassword(value) {
-        return (value === this.state.password);
-    }
-
     signin(token) {
-        fetch('http://' + config.api.host + ':' + config.api.port + '/user?api_key=' + token, {
+        fetch(`http://${config.api.host}:${config.api.port}/users?api_key=${token}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -105,10 +109,7 @@ export default class Signup extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        var canProceed = this.refs.email.isValidEmail()
-            && this.refs.password.isValid()
-            && this.refs.confirmPassword.isValid()
-            && this.refs.username.isValid();
+        var canProceed = this.state.email && this.state.password && this.state.confirmPassword && this.state.username;
 
         if (!this.state.recaptcha) {
             this.setState({type: 'warning', message: 'The captcha is not valid'});
@@ -119,7 +120,7 @@ export default class Signup extends Component {
                 config.api.user,
                 config.api.password,
                 function (token, res) {
-                    if (res.ok && !isNil(token)) {
+                    if (res.ok && token) {
                         this.setState({type: 'info', message: 'Saving...'});
                         this.signin(token);
                     }
@@ -132,9 +133,10 @@ export default class Signup extends Component {
     renderMessage() {
         if (this.state.message.length > 0) {
             return (
-                <div className={'alert alert-' + this.state.type} role="alert">{this.state.message}</div>
+                <div className={`alert alert-${this.state.type}`} role="alert">{this.state.message}</div>
             );
         }
+        return "";
     }
 
     verifyCaptcha() {
@@ -149,115 +151,100 @@ export default class Signup extends Component {
         return (
             <div className="formSignin">
                 <Helmet title="Sign Up"/>
-                <form id="signupForm" name="signupForm" onSubmit={this.onSubmit}>
+                <Form horizontal id="signupForm" name="signupForm" onSubmit={this.onSubmit}>
                     <div className="form-group has-feedback">
-                        <div className="form-group">
-                            <label className="radio-inline">
-                                <Input
-                                    id="formBasicText"
-                                    type="radio"
-                                    name="gender"
-                                    ref="gender"
-                                    value="m"
-                                    required={true}
-                                    onChange={this.handleChange}
-                                />Mr
-                            </label>
-                            <label className="radio-inline">
-                                <Input
-                                    id="formBasicText"
-                                    type="radio"
-                                    name="gender"
-                                    ref="gender"
-                                    value="f"
-                                    required={true}
-                                    onChange={this.handleChange}
-                                />Mme
-                            </label>
-                        </div>
-                        <div className="form-group">
-                            <Input
-                                id="formBasicText"
+                        <FormGroup controlId="formGender">
+                            <Radio inline
+                                   name="gender"
+                                   value="f"
+                                   required
+                                   onChange={this.handleChange}
+                                   checked={this.state.gender === 'f'}>Female</Radio>
+                            <Radio inline
+                                   name="gender"
+                                   value="m"
+                                   required
+                                   onChange={this.handleChange}
+                                   checked={this.state.gender === 'm'}>Male</Radio>
+                            <FormControl.Feedback />
+                        </FormGroup>
+                        <FormGroup controlId="formEmail">
+                            <FormControl
                                 type="email"
                                 name="email"
                                 ref="email"
-                                className="form-control"
-                                value={this.state.email}
+                                title="Email is not valid"
+                                value={this.state.email || ""}
                                 required={true}
                                 placeholder="Email address"
-                                maxLength="100"
                                 onChange={this.handleChange}
                             />
-                        </div>
-                        <div className="form-group">
-                            <Input
-                                id="formBasicText"
-                                type="text"
+                        </FormGroup>
+                        <FormGroup controlId="formUsername">
+                            <FormControl
+                                type="username"
                                 name="username"
                                 ref="username"
-                                className="form-control"
-                                value={this.state.username}
+                                value={this.state.username || ""}
                                 required={true}
+                                title="Username is not valid"
                                 placeholder="Username"
                                 maxLength="100"
                                 onChange={this.handleChange}
                             />
-                        </div>
-                        <div className="form-group">
-                            <Input
-                                id="formBasicText"
-                                name="password"
+                        </FormGroup>
+                        <FormGroup controlId="formPassword">
+                            <FormControl
                                 type="password"
+                                name="password"
                                 ref="password"
-                                className="form-control"
-                                value={this.state.password}
+                                value={this.state.password || ""}
                                 required={true}
+                                title="Password is not valid"
                                 placeholder="Password"
-                                onChange={this.handlePasswordInput}
+                                maxLength="100"
+                                onChange={this.handleChange}
                             />
-                        </div>
-                        <div className="form-group">
-                            <Input
-                                id="formBasicText"
+                        </FormGroup>
+                        <FormGroup controlId="formConfirmPassword">
+                            <FormControl
                                 type="password"
                                 name="confirmPassword"
                                 ref="confirmPassword"
-                                className="form-control"
-                                value={this.state.confirmPassword}
+                                value={this.state.confirmPassword || ""}
+                                required={true}
+                                title="Password is not valid"
                                 placeholder="Confirm password"
-                                errorMessage="Passwords do not match"
-                                onChange={this.handleChange}
-                                validate={this.isConfirmedPassword}
+                                maxLength="100"
+                                onChange={this.handlePasswordInput}
                             />
-                        </div>
-                        <div className="form-group">
-                            <Input
-                                id="formBasicText"
+                        </FormGroup>
+                        <FormGroup controlId="formFirstname">
+                            <FormControl
                                 type="text"
                                 name="firstname"
                                 ref="firstname"
-                                className="form-control"
-                                value={this.state.firstname}
+                                value={this.state.firstname || ""}
                                 required={true}
+                                title="Firstname is not valid"
                                 placeholder="Firstname"
                                 maxLength="100"
                                 onChange={this.handleChange}
                             />
-                        </div>
-                        <div className="form-group">
-                            <Input
-                                id="formBasicText"
+                        </FormGroup>
+                        <FormGroup controlId="formLastname">
+                            <FormControl
                                 type="text"
                                 name="lastname"
                                 ref="lastname"
-                                className="form-control"
-                                value={this.state.lastname}
+                                value={this.state.lastname || ""}
                                 required={true}
+                                title="Lastname is not valid"
                                 placeholder="Lastname"
                                 maxLength="100"
                                 onChange={this.handleChange}
                             />
-                        </div>
+                        </FormGroup>
                         <div className="form-group">
                             <Geosuggest placeholder="City" required types={['(cities)']} onSuggestSelect={this.onSuggestSelect}/>
                         </div>
@@ -265,13 +252,16 @@ export default class Signup extends Component {
                             sitekey={config.recaptchaId}
                             render="explicit"
                             verifyCallback={this.verifyCaptcha}
-                            onloadCallback={this.onloadCaptcha}
-                        />
+                            onloadCallback={this.onloadCaptcha}/>
+
                         { this.renderMessage() }
                         <br/>
-                        <button type="submit" className="signup-button btn btn-primary">Sign Up</button>
+
+                        <Button type="submit" className="signup-button btn btn-primary">
+                            {this.state.isSaving ? 'Saving...' : 'Create Account'}
+                        </Button>
                     </div>
-                </form>
+                </Form>
             </div>
         );
     }

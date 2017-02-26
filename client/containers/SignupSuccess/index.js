@@ -9,15 +9,16 @@ export default class Signup extends Component {
 
     render() {
         const styles = require('./styles.css');
+
         return (
             <div className="container">
+                <Helmet title="Sign Up success"/>
                 <div className="row">
                     <div className="successMessage">
-                        <Helmet title="Sign Up success"/>
-                        <p>
+                        <div className="alert alert-success" role="alert">
                             Your account has been created with success.
                             Check your email for activation.
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>

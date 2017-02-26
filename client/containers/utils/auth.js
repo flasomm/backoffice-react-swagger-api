@@ -1,10 +1,9 @@
 import cookie from 'react-cookie';
 import 'whatwg-fetch';
-import {isNil} from 'lodash';
 const config = require('config');
 
 /**
- * This class is responsible to make authentication and verify token.
+ * This class is responsible to make authentication and verify jwt token.
  */
 class Auth {
 
@@ -36,7 +35,7 @@ class Auth {
             })
         }).then(function (res) {
             return res.json().then(function (json) {
-                if (res.ok && !isNil(json.token) && withCookie === true) {
+                if (res.ok && json.token && withCookie === true) {
                     cookie.save('jwtToken', json.token, {path: '/'});
                     cookie.save('uid', json.id, {path: '/'});
                     cookie.save('username', json.username, {path: '/'});

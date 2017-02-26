@@ -9,8 +9,14 @@
 
 import React, {Component} from 'react';
 import Helmet from 'react-helmet';
-import {Footer, Input} from 'components';
+import {Footer} from 'components';
 import auth from '../utils/auth';
+import {
+    Form,
+    FormControl,
+    ControlLabel,
+    FormGroup
+} from 'react-bootstrap';
 
 /**
  * Login component class.
@@ -24,10 +30,9 @@ export default class Login extends Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    handleChange(value, key) {
-        var state = {};
-        state[key] = value;
-        this.setState(state);
+    handleChange(e) {
+        this.state[e.target.name] = e.target.value;
+        this.forceUpdate();
     }
 
     onSubmit(e) {
@@ -57,7 +62,7 @@ export default class Login extends Component {
     renderMessage() {
         if (this.state.message.length > 0) {
             return (
-                <div className={'alert alert-' + this.state.type} role="alert">{this.state.message}</div>
+                <div className={`alert alert-${this.state.type}`} role="alert">{this.state.message}</div>
             );
         }
     }
@@ -69,43 +74,35 @@ export default class Login extends Component {
                 <div className="row">
                     <div className="formLogin">
                         <Helmet title="Log In"/>
-                        <form id="loginForm" name="loginForm" onSubmit={this.onSubmit}>
-                            <div className="form-group">
-                                <label htmlFor="email" className="control-label">Email address</label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    ref="email"
-                                    className="form-control"
-                                    value={this.state.email}
-                                    required={true}
-                                    placeholder="Your email"
-                                    maxLength="100"
-                                    onChange={this.handleChange}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="password" className="control-label">Password</label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    ref="password"
-                                    className="form-control"
-                                    value={this.state.password}
-                                    required={true}
-                                    placeholder="Your password"
-                                    maxLength="30"
-                                    onChange={this.handleChange}
-                                />
-                            </div>
+                        <Form horizontal id="loginForm" name="loginForm" onSubmit={this.onSubmit}>
+                            <FormGroup controlId="formEmail">
+                                <ControlLabel>Email address</ControlLabel>
+                                <FormControl type="email"
+                                             name="email"
+                                             ref="email"
+                                             value={this.state.email || ""}
+                                             placeholder="Your email"
+                                             maxLength="100"
+                                             required
+                                             onChange={this.handleChange}/>
+                            </FormGroup>
+                            <FormGroup controlId="formPassword">
+                                <ControlLabel>Password</ControlLabel>
+                                <FormControl type="password"
+                                             name="password"
+                                             ref="password"
+                                             value={this.state.password || ""}
+                                             placeholder="Your password"
+                                             maxLength="30"
+                                             required
+                                             onChange={this.handleChange}/>
+                            </FormGroup>
                             { this.renderMessage() }
                             <span className="help-block">
                                 <a href="/forgot-password" rel="forgot password">Forgot your password</a>
                             </span>
                             <button type="submit" className="btn btn-primary">Log In</button>
-                        </form>
+                        </Form>
                     </div>
                 </div>
                 <hr/>

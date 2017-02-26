@@ -14,6 +14,7 @@ import auth from '../utils/auth'
 import 'whatwg-fetch';
 import dateFormat from 'dateformat';
 import {
+    Form,
     FormControl,
     ControlLabel,
     FormGroup,
@@ -33,7 +34,7 @@ export default class Profiles extends Component {
      */
     constructor(props) {
         super(props);
-        this.state = {profile: {}, message: ""};
+        this.state = {profile: {}, message: "", hasChanged: false, isSaving: false};
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
@@ -44,7 +45,7 @@ export default class Profiles extends Component {
      * Avoid introducing any side-effects or subscriptions in this method.
      */
     componentWillMount() {
-        this.fetchProfileData((data) => {
+        this.loadProfileData((data) => {
             delete data._id;
             this.setState({profile: data});
         });
@@ -54,7 +55,7 @@ export default class Profiles extends Component {
      * Fetch profile data.
      * @param cb
      */
-    fetchProfileData(cb) {
+    loadProfileData(cb) {
         fetch(`${auth.getServerUrl()}/users/${this.props.params.id}?api_key=${auth.getToken()}`, {
             method: 'GET',
             headers: {
@@ -93,13 +94,20 @@ export default class Profiles extends Component {
     }
 
     /**
+     * Abort the changes on User and return to the Users page.
+     */
+    cancel() {
+        window.location.href = `/profiles`;
+    }
+
+    /**
      * Bind field name and value to profile in state.
      * @param e
      */
     handleChange(e) {
-        let profile = this.state.profile;
-        profile[e.target.name] = e.target.value;
-        this.setState({profile: profile});
+        this.state.hasChanged = true;
+        this.state.profile[e.target.name] = e.target.value;
+        this.forceUpdate();
     }
 
     /**
@@ -144,51 +152,47 @@ export default class Profiles extends Component {
                             <div className="row">
                                 <div className="col-lg-6">
                                     <div className="formEditProfile">
-                                        <form id="editProfileForm" name="loginForm" onSubmit={this.onSubmit}>
+                                        <Form horizontal id="editProfileForm" name="loginForm" onSubmit={this.onSubmit}>
                                             <FormGroup controlId="formEmail">
                                                 <ControlLabel>Email address</ControlLabel>
-                                                <FormControl
-                                                    type="email"
-                                                    name="email"
-                                                    value={this.state.profile.email || ""}
-                                                    placeholder="Your email"
-                                                    onChange={this.handleChange}
-                                                />
+                                                <FormControl type="email"
+                                                             name="email"
+                                                             value={this.state.profile.email || ""}
+                                                             placeholder="Your email"
+                                                             onChange={this.handleChange}/>
                                                 <FormControl.Feedback />
                                             </FormGroup>
+
                                             <FormGroup controlId="formUsername">
                                                 <ControlLabel>Username</ControlLabel>
-                                                <FormControl
-                                                    type="text"
-                                                    name="username"
-                                                    value={this.state.profile.username || ""}
-                                                    placeholder="Your username"
-                                                    onChange={this.handleChange}
-                                                />
+                                                <FormControl type="text"
+                                                             name="username"
+                                                             value={this.state.profile.username || ""}
+                                                             placeholder="Your username"
+                                                             onChange={this.handleChange}/>
                                                 <FormControl.Feedback />
                                             </FormGroup>
+
                                             <FormGroup controlId="formFirstname">
                                                 <ControlLabel>Firstname</ControlLabel>
-                                                <FormControl
-                                                    type="text"
-                                                    name="firstname"
-                                                    value={this.state.profile.firstname || ""}
-                                                    placeholder="Your firstname"
-                                                    onChange={this.handleChange}
-                                                />
+                                                <FormControl type="text"
+                                                             name="firstname"
+                                                             value={this.state.profile.firstname || ""}
+                                                             placeholder="Your firstname"
+                                                             onChange={this.handleChange}/>
                                                 <FormControl.Feedback />
                                             </FormGroup>
+
                                             <FormGroup controlId="formLastname">
                                                 <ControlLabel>Firstname</ControlLabel>
-                                                <FormControl
-                                                    type="text"
-                                                    name="lastname"
-                                                    value={this.state.profile.lastname || ""}
-                                                    placeholder="Your lastname"
-                                                    onChange={this.handleChange}
-                                                />
+                                                <FormControl type="text"
+                                                             name="lastname"
+                                                             value={this.state.profile.lastname || ""}
+                                                             placeholder="Your lastname"
+                                                             onChange={this.handleChange}/>
                                                 <FormControl.Feedback />
                                             </FormGroup>
+
                                             <FormGroup controlId="formGender">
                                                 <ControlLabel>Gender</ControlLabel><br/>
                                                 <Radio inline
@@ -203,37 +207,51 @@ export default class Profiles extends Component {
                                                        checked={this.state.profile.gender === 'm'}>Male</Radio>
                                                 <FormControl.Feedback />
                                             </FormGroup>
+
                                             <FormGroup controlId="formGroup">
                                                 <ControlLabel>Group</ControlLabel>
-                                                <FormControl
-                                                    componentClass="select"
-                                                    placeholder="Group"
-                                                    name="group"
-                                                    value={this.state.profile.group}
-                                                    onChange={this.handleChange}
-                                                >
+                                                <FormControl componentClass="select"
+                                                             placeholder="Group"
+                                                             name="group"
+                                                             value={this.state.profile.group}
+                                                             onChange={this.handleChange}>
                                                     <option value="user">User</option>
                                                     <option value="admin">Admin</option>
                                                 </FormControl>
                                                 <FormControl.Feedback />
                                             </FormGroup>
+
                                             <FormGroup controlId="formActive">
                                                 <ControlLabel>Active</ControlLabel>
-                                                <FormControl
-                                                    componentClass="select"
-                                                    placeholder="Active"
-                                                    name="active"
-                                                    value={this.state.profile.active}
-                                                    onChange={this.handleChange}
-                                                >
+                                                <FormControl componentClass="select"
+                                                             placeholder="Active"
+                                                             name="active"
+                                                             value={this.state.profile.active}
+                                                             onChange={this.handleChange}>
+
                                                     <option value={true}>Yes</option>
                                                     <option value={false}>No</option>
                                                 </FormControl>
                                                 <FormControl.Feedback />
                                             </FormGroup>
+
                                             { this.renderMessage() }
-                                            <Button type="submit" className="btn btn-primary">Update</Button>
-                                        </form>
+
+                                            <div className="validation-btn">
+                                                <Button type="button"
+                                                        className="btn btn-default"
+                                                        disabled={this.state.isSaving}
+                                                        onClick={this.cancel.bind(this)}>
+                                                    Cancel
+                                                </Button>
+
+                                                <Button type="submit"
+                                                        className="btn btn-primary"
+                                                        disabled={!this.state.hasChanged || this.state.isSaving}>
+                                                    {this.state.isSaving ? 'Saving...' : 'Save'}
+                                                </Button>
+                                            </div>
+                                        </Form>
                                     </div>
                                 </div>
                             </div>

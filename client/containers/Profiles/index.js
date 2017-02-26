@@ -125,10 +125,10 @@ export default class Profiles extends Component {
     }
 
     /**
-     *
+     * 
      * @param cell
      * @param row
-     * @returns {XML}
+     * @returns {string}
      */
     actionsFormatter(cell, row) {
         return `<a href="/profile/${cell}" class="btn btn-primary btn-xs" role="button" aria-pressed="true">Edit</a>`;

@@ -37,10 +37,10 @@
         app.use(SwaggerUi(swaggerExpress.runner.swagger));
         // Add headers
         app.use((req, res, next) => {
-            res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-            res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-            res.setHeader('Content-Type', 'application/json');
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+            res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+            res.header('Content-Type', 'application/json');
             next();
         });
 
@@ -49,7 +49,7 @@
 
         // Create a MonboDB connection pool and start the Node.js app
         let db = config.get('database');
-        let host = config.get('api.host') || localhost;
+        let host = config.get('api.host') || 'localhost';
         let port = config.get('api.port') || 8000;
 
         MongoClient.connect(db)
