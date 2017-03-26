@@ -11,7 +11,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router'
 import {Footer} from 'components';
 import auth from '../utils/auth';
-var config = require('config');
+const config = require('config');
 
 /**
  * Main App class.
@@ -115,7 +115,6 @@ export default class App extends Component {
      * @returns {XML}
      */
     render() {
-        const styles = require('./styles.css');
         return (
             <div>
                 <nav className="navbar navbar-default navbar-fixed-top">

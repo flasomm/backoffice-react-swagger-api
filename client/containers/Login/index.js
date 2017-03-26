@@ -68,7 +68,7 @@ export default class Login extends Component {
     }
 
     render() {
-        const styles = require('./styles.css');
+
         return (
             <div className="container">
                 <div className="row">

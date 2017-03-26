@@ -50,7 +50,7 @@ export default class ForgotPassword extends Component {
     }
 
     render() {
-        const styles = require('./styles.css');
+        
         return (
             <div className="formForgot">
                 <Helmet title="Forgot password"/>

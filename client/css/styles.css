@@ -1,3 +1,77 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.h1, h1 {
+    font-size: 2em;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.margin-right-10 {
+    margin-right: 10px;
+}
+
+.panel {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+.panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.huge {
+    font-size: 40px;
+}
+
+.panel-footer {
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.formForgot {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.forgot-button {
+    width: 100%;
+}
+
+.formLogin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.validation-btn {
+    float: right;
+}
+
+.validation-btn button {
+    margin-left: 20px;
+}
+
+.disabled {
+    background-color: #eee;
+    opacity: 1;
+}
+
 /**
  * React Select
  * ============
@@ -1096,4 +1170,67 @@ textarea.react-autocomplete-Autocomplete__search {
     100% {
         -webkit-transform: translateY(0%);
     }
+}
+
+.formSignin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.signup-button {
+    width: 100%;
+}
+
+/**
+ * The geosuggest module
+ */
+.geosuggest {
+    position: relative;
+    text-align: left;
+}
+
+.geosuggest__suggests--hidden {
+    max-height: 0;
+    overflow: hidden;
+    border-width: 0;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 25em;
+    padding: 0;
+    border-top-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    list-style: none;
+    z-index: 5;
+    -webkit-transition: max-height 0.2s, border 0.2s;
+    transition: max-height 0.2s, border 0.2s;
+}
+
+/**
+ * A geosuggest item
+ */
+.geosuggest-item {
+    padding: .5em .65em;
+    cursor: pointer;
+}
+
+.geosuggest-item.active {
+    background: #f5f5f5;
+}
+
+.geosuggest-item:hover,
+.geosuggest-item:focus {
+    background: #f5f5f5;
+}
+
+.successMessage {
+    max-width: 500px;
+    padding: 15px;
+    margin: 0 auto;
 }

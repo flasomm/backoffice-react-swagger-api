@@ -9,7 +9,7 @@
 
 import React from 'react';
 import {IndexRoute, Route} from 'react-router';
-import auth from 'containers/utils/auth'
+import auth from 'containers/utils/auth';
 import {
     App,
     Home,

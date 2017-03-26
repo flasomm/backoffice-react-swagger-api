@@ -138,7 +138,6 @@ export default class Profiles extends Component {
      * @returns {XML}
      */
     render() {
-        const styles = require('./styles.css');
         return (
             <div className="container">
                 <Helmet title={this.displayPageTitle()}/>

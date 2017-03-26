@@ -7,7 +7,7 @@ const config = require('./config/webpack.config');
 
 const isDeveloping = process.env.NODE_ENV !== 'prod';
 const serverOptions = {
-    contentBase: 'src',
+    contentBase: 'client',
     quiet: true,
     noInfo: true,
     hot: true,
@@ -38,7 +38,7 @@ if (isDeveloping) {
         res.end();
     });
 } else {
-    app.use(express.static(__dirname + '/dist'));
+    app.use(express.static(path.join(__dirname, 'dist')));
     app.get('*', function response(req, res) {
         res.sendFile(path.join(__dirname, 'dist/index.html'));
     });
@@ -46,10 +46,11 @@ if (isDeveloping) {
 
 const port = isDeveloping ? JSON.parse(config.externals.config).client.port : 3000;
 
-app.listen(port, '0.0.0.0', function onAppListening(err) {
-    if (err) {
-        console.error(err);
+app.listen(port, (error) => {
+
+    if( error ) {
+        console.log(error);
     } else {
-        console.info('==> Webpack development server listening on port %s', port);
+        console.log('==> Webpack development server listening on port %s', port);
     }
 });

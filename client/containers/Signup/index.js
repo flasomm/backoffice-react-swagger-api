@@ -155,7 +155,6 @@ export default class Signup extends Component {
     }
 
     render() {
-        const styles = require('./styles.css');
         return (
             <div className="formSignin">
                 <Helmet title="Sign Up"/>

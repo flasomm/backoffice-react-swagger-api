@@ -7,78 +7,134 @@
 
 "use strict";
 
-require('babel-polyfill');
-const path = require("path");
+const path = require('path');
 const extend = require('util')._extend;
 const webpack = require('webpack');
+const DefinePlugin = require('webpack/lib/DefinePlugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const IS_DEV = process.env.NODE_ENV === 'dev';
 
 module.exports = {
     context: path.resolve(__dirname, '..'),
-    entry: [
-        'webpack-hot-middleware/client?reload=true',
-        './client/app.js'
-    ],
+    devtool: IS_DEV ? 'eval' : 'source-map',
+    entry: {
+        app: ['babel-polyfill', './client/index.js']
+    },
     output: {
         path: path.join(__dirname, '..', 'dist'),
-        publicPath: "/",
+        publicPath: '/',
         filename: '[name].js'
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    "presets": ["react", "es2015", "stage-0"],
-                    "plugins": [
-                        "transform-runtime",
-                        "add-module-exports",
-                        "transform-decorators-legacy",
-                        "transform-react-display-name"
-                    ]
-                }
+                test: /jquery\..*\.js/,
+                loader: "imports?$=jquery,jQuery=jquery,this=>window"
+            },
+            {
+                test: /\.jsx?$/,
+                exclude: /(node_modules|bower_components)/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            "presets": ['es2015', 'react', 'stage-0']
+                        }
+                    }
+                ]
             },
             {
                 test: /\.json$/,
-                loader: 'json-loader'
+                use: [
+                    {
+                        loader: 'json-loader'
+                    }
+                ]
+            },
+            {
+                test: /\.(jpg|png|gif|mp4)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'client/images/[name].[ext]'
+                        }
+                    }
+                ]
             },
             {
                 test: /\.css$/,
-                loader: 'style!css'
+                use: ExtractTextPlugin.extract({
+                    use: ['style-loader', 'css-loader']
+                })
             },
             {
-                test: webpackIsomorphicToolsPlugin.regular_expression('images'),
-                loader: 'url-loader?limit=10240'
+                test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+                use: {
+                    loader: 'file-loader?name=fonts/[name].[ext]'
+                }
+            },
+            {
+                test: /config\/(config|version)\.js$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'client/js/[name].[ext]'
+                        }
+                    }
+                ]
             }
+        ],
+        noParse: [
+            /\.min\.js/
         ]
     },
-    progress: true,
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty',
+        dns: 'empty'
+    },
     resolve: {
-        modulesDirectories: [
-            'client',
-            'node_modules'
-        ],
-        extensions: ['', '.json', '.js', '.jsx']
+        modules: [
+            'node_modules',
+            'client'
+        ]
     },
     plugins: [
-        webpackIsomorphicToolsPlugin.development(),
+        new DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+        }),
+        new ExtractTextPlugin({
+            filename: 'client/css/[name].css',
+            disable: IS_DEV
+        }),
+        new FaviconsWebpackPlugin({
+            logo: path.join(__dirname, '..', 'favicon.png'),
+            prefix: 'client/favicons/',
+            persistentCache: true,
+            inject: true
+        }),
         new HtmlWebpackPlugin({
             template: './client/index.tpl.html',
             inject: 'body',
             filename: 'index.html'
         }),
-        new webpack.optimize.OccurenceOrderPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin(),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('dev')
+        new webpack.LoaderOptionsPlugin({
+            debug: true
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            },
+            sourceMap: !IS_DEV
         })
     ],
     externals: {
-        config: JSON.stringify(extend(require('./config.json'), process.env.NODE_ENV === 'prod' ? require('./prod.json') : require('./dev.json')))
+        config: JSON.stringify(extend(require('./config.json'), require(`./${process.env.NODE_ENV}.json`)))
     }
 };
