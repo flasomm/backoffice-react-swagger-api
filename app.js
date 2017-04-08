@@ -3,10 +3,11 @@
 
     const MongoClient = require('mongodb').MongoClient;
     const SwaggerExpress = require('swagger-express-mw');
-    const SwaggerUi = require('swagger-tools/middleware/swagger-ui');
     const jwt = require('jsonwebtoken');
-    const app = require('express')();
+    const express = require('express');
     const config = require('config');
+    const path = require('path');
+    const app = new express();
 
     let swaggerConfig = {
         appRoot: __dirname,
@@ -18,7 +19,6 @@
                         if (err) {
                             return cb(new Error('Invalid token'));
                         }
-
                         next();
                     });
                 } else {
@@ -33,14 +33,14 @@
             throw err;
         }
 
-        // Add swagger-ui (This must be before swaggerExpress.register)
-        app.use(SwaggerUi(swaggerExpress.runner.swagger));
+        app.use(express.static(path.join(__dirname, 'api', 'swagger')));
         // Add headers
         app.use((req, res, next) => {
             res.header('Access-Control-Allow-Origin', '*');
             res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
             res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-            res.header('Content-Type', 'application/json');
+            res.header("Access-Control-Allow-Headers", "Content-Type, X-API-KEY, Authorization");
+            res.header('Content-Type', 'application/json; charset=utf-8');
             next();
         });
 

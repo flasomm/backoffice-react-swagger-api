@@ -76,11 +76,12 @@ export default class Signup extends Component {
     }
 
     signin(token) {
-        fetch(`http://${config.api.host}:${config.api.port}/users?api_key=${token}`, {
+        fetch(`http://${config.api.host}:${config.api.port}/users`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-api-key': token
             },
             body: JSON.stringify({
                 gender: this.state.gender,

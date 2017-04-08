@@ -49,11 +49,12 @@ export default class Profiles extends Component {
      * @param cb
      */
     fetchProfilesData(cb) {
-        fetch(`${auth.getServerUrl()}/users?api_key=${auth.getToken()}`, {
+        fetch(`${auth.getServerUrl()}/users`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-api-key': auth.getToken()
             }
         }).then(function (res) {
             return res.json().then(function (data) {

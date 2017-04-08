@@ -33,7 +33,12 @@ export default class Profiles extends Component {
      */
     constructor(props) {
         super(props);
-        this.state = {profile: {}, message: "", hasChanged: false, isSaving: false};
+        this.state = {
+            profile: {group: 'user', active: 'true'},
+            message: "",
+            hasChanged: false,
+            isSaving: false
+        };
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
@@ -44,6 +49,9 @@ export default class Profiles extends Component {
      * Avoid introducing any side-effects or subscriptions in this method.
      */
     componentWillMount() {
+        if (this.props.params.id === 'new') {
+            return;
+        }
         this.loadProfileData((data) => {
             delete data._id;
             this.setState({profile: data});
@@ -55,11 +63,12 @@ export default class Profiles extends Component {
      * @param cb
      */
     loadProfileData(cb) {
-        fetch(`${auth.getServerUrl()}/users/${this.props.params.id}?api_key=${auth.getToken()}`, {
+        fetch(`${auth.getServerUrl()}/users/${this.props.params.id}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-api-key': auth.getToken()
             }
         }).then(function (res) {
             return res.json().then(function (data) {
@@ -77,16 +86,31 @@ export default class Profiles extends Component {
     onSubmit(e) {
         e.preventDefault();
         let self = this;
-        fetch(`${auth.getServerUrl()}/users/${this.props.params.id}?api_key=${auth.getToken()}`, {
-            method: 'PUT',
+        let method = 'PUT';
+        let param = this.props.params.id;
+        if (this.props.params.id === 'new') {
+            method = 'POST';
+            param = '';
+        }
+        console.log(JSON.stringify(this.state.profile));
+        fetch(`${auth.getServerUrl()}/users/${param}`, {
+            method: method,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-api-key': auth.getToken()
             },
             body: JSON.stringify(this.state.profile)
         }).then(function (res) {
             return res.json().then(function (data) {
-                if (res.status === 200) {
-                    self.setState({type: 'info', message: `Profile ${data.username} updated with success`});
+                switch (res.status) {
+                    case 200:
+                        self.setState({type: 'info', message: `Profile ${data.username} saved successfully`});
+                        break;
+                    case 409:
+                        self.setState({type: 'warning', message: `Profile with this email already exist`});
+                        break;
+                    default:
+                        self.setState({type: 'danger', message: `Error: ${data.errors}`});
                 }
             });
         });

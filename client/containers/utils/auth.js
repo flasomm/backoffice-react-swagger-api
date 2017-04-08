@@ -20,7 +20,6 @@ class Auth {
      * Default constructor.
      */
     constructor() {
-        this.serverUrl = this.getServerUrl();
     }
 
     /**
@@ -32,7 +31,7 @@ class Auth {
      * @param withCookie
      */
     login(email, password, cb, withCookie) {
-        fetch(this.serverUrl + '/login', {
+        fetch(`${this.getServerUrl()}/login`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -61,7 +60,7 @@ class Auth {
         if (!token) {
             return;
         }
-        fetch(this.serverUrl + '/validateToken', {
+        fetch(`${this.getServerUrl()}/validateToken`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
